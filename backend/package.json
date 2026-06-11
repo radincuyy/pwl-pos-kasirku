@@ -1,0 +1,30 @@
+{
+  "name": "kasirku-backend",
+  "version": "0.1.0",
+  "description": "Backend REST API untuk aplikasi KasirKu Web - Sistem Point of Sales.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "vitest run --globals"
+  },
+  "keywords": [
+    "express",
+    "point-of-sales",
+    "mysql",
+    "redis",
+    "rest-api"
+  ],
+  "author": "Kelompok Pemrograman Web Lanjut",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "supertest": "^7.1.1",
+    "vitest": "^3.2.4"
+  }
+}

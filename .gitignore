@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+build/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Database dumps / local files
+*.sql.gz
+*.dump
+*.sqlite
+*.sqlite3
+
+# Generated docs/media
+*.mp4
+*.zip
+
+# Local academic deliverables
+report/
+presentation/
+demo/
