@@ -72,6 +72,8 @@ CREATE TABLE sales (
   total_amount DECIMAL(12,2) NOT NULL DEFAULT 0,
   paid_amount DECIMAL(12,2) NOT NULL DEFAULT 0,
   change_amount DECIMAL(12,2) NOT NULL DEFAULT 0,
+  payment_method ENUM('cash', 'transfer', 'qris', 'debit') NOT NULL DEFAULT 'cash',
+  status ENUM('paid', 'cancelled') NOT NULL DEFAULT 'paid',
   sale_date DATETIME NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -95,6 +97,7 @@ CREATE TABLE sale_items (
 CREATE TABLE stock_movements (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   product_id BIGINT UNSIGNED NOT NULL,
+  sale_id BIGINT UNSIGNED NULL,
   type ENUM('in', 'out') NOT NULL,
   quantity INT NOT NULL,
   description TEXT NULL,
@@ -102,6 +105,7 @@ CREATE TABLE stock_movements (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_stock_movements_product FOREIGN KEY (product_id) REFERENCES products(id),
+  CONSTRAINT fk_stock_movements_sale FOREIGN KEY (sale_id) REFERENCES sales(id),
   CONSTRAINT fk_stock_movements_user FOREIGN KEY (created_by) REFERENCES users(id)
 );
 
