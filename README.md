@@ -40,10 +40,12 @@ pwl-pos-kasirku/
 - [x] Menentukan studi kasus: Sistem Point of Sales
 - [x] Membuat repository awal
 - [x] Menyiapkan dokumen requirement awal
-- [ ] Membuat desain database dan ERD final
+- [x] Membuat draft desain database
+- [ ] Membuat ERD final
 - [x] Setup backend Express
-- [ ] Setup database MySQL
-- [ ] Implementasi authentication
+- [x] Setup koneksi database MySQL
+- [x] Implementasi authentication
+- [ ] Validasi schema dan seed di MySQL lokal
 - [ ] Implementasi CRUD modul master
 - [ ] Implementasi transaksi penjualan
 - [ ] Implementasi Redis caching
