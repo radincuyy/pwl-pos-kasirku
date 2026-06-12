@@ -45,7 +45,7 @@ pwl-pos-kasirku/
 - [x] Setup backend Express
 - [x] Setup koneksi database MySQL
 - [x] Implementasi authentication
-- [ ] Validasi schema dan seed di MySQL lokal
+- [x] Validasi schema dan seed di MySQL lokal
 - [ ] Implementasi CRUD modul master
 - [ ] Implementasi transaksi penjualan
 - [ ] Implementasi Redis caching
