@@ -42,6 +42,7 @@ http://localhost:5001/api
 |---|---|---|---|
 | GET | `/categories` | List kategori | Yes |
 | POST | `/categories` | Tambah kategori | Yes |
+| GET | `/categories/:id` | Detail kategori | Yes |
 | PUT | `/categories/:id` | Update kategori | Yes |
 | DELETE | `/categories/:id` | Hapus kategori | Yes |
 
@@ -71,4 +72,4 @@ http://localhost:5001/api
 | POST | `/sales` | Membuat transaksi penjualan | Yes |
 | GET | `/sales/:id` | Detail transaksi | Yes |
 
-Total endpoint awal: 25 endpoint.
+Total endpoint awal: 26 endpoint.
