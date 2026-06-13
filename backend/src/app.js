@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const authRoutes = require('./routes/authRoutes');
 const healthRoutes = require('./routes/healthRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
 const notFoundMiddleware = require('./middlewares/notFoundMiddleware');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 
@@ -24,8 +25,16 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/api', (req, res) => {
+  return res.status(200).json({
+    success: true,
+    message: 'KasirKu API root. Gunakan /api/auth, /api/health, atau /api/dashboard.'
+  });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/health', healthRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
