@@ -8,6 +8,7 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const customerRoutes = require('./routes/customerRoutes');
 const healthRoutes = require('./routes/healthRoutes');
 const productRoutes = require('./routes/productRoutes');
+const saleRoutes = require('./routes/saleRoutes');
 const supplierRoutes = require('./routes/supplierRoutes');
 const notFoundMiddleware = require('./middlewares/notFoundMiddleware');
 const errorMiddleware = require('./middlewares/errorMiddleware');
@@ -33,6 +34,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/health', healthRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/sales', saleRoutes);
 app.use('/api/suppliers', supplierRoutes);
 
 app.use(notFoundMiddleware);
