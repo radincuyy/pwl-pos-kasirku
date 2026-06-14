@@ -47,7 +47,7 @@ pwl-pos-kasirku/
 - [x] Implementasi authentication
 - [x] Validasi schema dan seed di MySQL lokal
 - [x] Implementasi CRUD modul master
-- [ ] Implementasi transaksi penjualan
+- [x] Implementasi transaksi penjualan
 - [ ] Implementasi Redis caching
 - [ ] Setup frontend React
 - [ ] Integrasi frontend-backend dengan Axios
