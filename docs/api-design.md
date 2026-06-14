@@ -62,6 +62,7 @@ http://localhost:5001/api
 |---|---|---|---|
 | GET | `/customers` | List pelanggan | Yes |
 | POST | `/customers` | Tambah pelanggan | Yes |
+| GET | `/customers/:id` | Detail pelanggan | Yes |
 | PUT | `/customers/:id` | Update pelanggan | Yes |
 | DELETE | `/customers/:id` | Hapus pelanggan | Yes |
 
@@ -73,4 +74,4 @@ http://localhost:5001/api
 | POST | `/sales` | Membuat transaksi penjualan | Yes |
 | GET | `/sales/:id` | Detail transaksi | Yes |
 
-Total endpoint awal: 27 endpoint.
+Total endpoint awal: 28 endpoint.
