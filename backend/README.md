@@ -39,7 +39,7 @@ REDIS_PORT=6379
 REDIS_TTL_SECONDS=300
 ```
 
-Cache Redis dipakai untuk `GET /api/products` dan dibersihkan saat data produk, kategori, supplier, atau transaksi penjualan berubah.
+Cache Redis dipakai untuk `GET /api/products`, `GET /api/dashboard/summary`, dan dibersihkan saat data produk, kategori, supplier, atau transaksi penjualan berubah.
 
 ## Scripts
 
@@ -52,16 +52,37 @@ npm test        # menjalankan automated test
 ## Endpoint
 
 ```text
-GET /api/health
-POST /api/auth/login
-GET /api/auth/me
-POST /api/auth/logout
-GET /api/categories
-GET /api/suppliers
-GET /api/customers
-GET /api/products
-GET /api/sales
+GET    /api/health
+POST   /api/auth/login
+GET    /api/auth/me
+POST   /api/auth/logout
+GET    /api/dashboard/summary    (Redis cached)
+GET    /api/categories
+POST   /api/categories
+GET    /api/categories/:id
+PUT    /api/categories/:id
+DELETE /api/categories/:id
+GET    /api/suppliers
+POST   /api/suppliers
+GET    /api/suppliers/:id
+PUT    /api/suppliers/:id
+DELETE /api/suppliers/:id
+GET    /api/products             (Redis cached)
+POST   /api/products
+GET    /api/products/:id
+PUT    /api/products/:id
+DELETE /api/products/:id
+GET    /api/customers
+POST   /api/customers
+GET    /api/customers/:id
+PUT    /api/customers/:id
+DELETE /api/customers/:id
+GET    /api/sales
+POST   /api/sales
+GET    /api/sales/:id
 ```
+
+Total: 28 endpoint.
 
 Base URL local:
 
