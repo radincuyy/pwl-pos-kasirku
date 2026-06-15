@@ -41,7 +41,7 @@ pwl-pos-kasirku/
 - [x] Membuat repository awal
 - [x] Menyiapkan dokumen requirement awal
 - [x] Membuat draft desain database
-- [ ] Membuat ERD final
+- [x] Membuat ERD final
 - [x] Setup backend Express
 - [x] Setup koneksi database MySQL
 - [x] Implementasi authentication
