@@ -11,6 +11,8 @@ cp .env.example .env
 npm run dev
 ```
 
+Server backend membutuhkan MySQL dan Redis lokal sesuai konfigurasi `.env`.
+
 ## Setup Database
 
 Jalankan schema dan seed awal pada MySQL lokal:
@@ -27,6 +29,18 @@ email: admin@kasirku.test
 password: Admin12345
 ```
 
+## Setup Redis
+
+Jalankan Redis pada host dan port sesuai `.env`:
+
+```text
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_TTL_SECONDS=300
+```
+
+Cache Redis dipakai untuk `GET /api/products` dan dibersihkan saat data produk, kategori, supplier, atau transaksi penjualan berubah.
+
 ## Scripts
 
 ```bash
@@ -42,6 +56,11 @@ GET /api/health
 POST /api/auth/login
 GET /api/auth/me
 POST /api/auth/logout
+GET /api/categories
+GET /api/suppliers
+GET /api/customers
+GET /api/products
+GET /api/sales
 ```
 
 Base URL local:

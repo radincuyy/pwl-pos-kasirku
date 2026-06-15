@@ -1,7 +1,19 @@
 const app = require('./app');
+const { connectRedis } = require('./config/redis');
 
 const PORT = process.env.PORT || 5001;
 
-app.listen(PORT, () => {
-  console.log(`KasirKu API running on http://localhost:${PORT}`);
+async function startServer() {
+  await connectRedis();
+
+  app.listen(PORT, () => {
+    console.log(`KasirKu API running on http://localhost:${PORT}`);
+  });
+}
+
+startServer().catch((error) => {
+  console.error('Failed to start KasirKu API', {
+    message: error.message
+  });
+  process.exit(1);
 });
