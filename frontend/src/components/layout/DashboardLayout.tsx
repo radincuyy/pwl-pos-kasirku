@@ -1,14 +1,11 @@
 "use client"
 
-import * as React from "react"
 import { Outlet } from "react-router-dom"
 import { useAppSelector } from "@/store"
 import {
   SidebarProvider,
   Sidebar,
-  SidebarInset,
   SidebarTrigger,
-  SidebarRail,
 } from "@/components/ui/sidebar"
 import AppSidebar from "./AppSidebar"
 import { Button } from "@/components/ui/button"
@@ -17,7 +14,7 @@ export default function DashboardLayout() {
   const user = useAppSelector((state) => state.auth.user)
 
   const handleLogout = () => {
-    // Placeholder handler per AGENT.md — actual logout implemented in later task
+    
     console.log("logout placeholder")
   }
 
