@@ -5,6 +5,7 @@ import ProtectedRoute from "@/components/layout/ProtectedRoute"
 import DashboardLayout from "@/components/layout/DashboardLayout"
 
 import LoginPage from "@/pages/LoginPage";
+import DashboardPage from "@/pages/DashboardPage";
 
 // Minimal inline pages — these are lightweight placeholders so routing works.
 // Real pages should be implemented separately and wired here when ready.
@@ -26,7 +27,7 @@ export default function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
-            <Route index element={<Placeholder title="Dashboard" />} />
+            <Route index element={<DashboardPage />} />
             <Route path="products" element={<Placeholder title="Master Produk" />} />
             <Route path="categories" element={<Placeholder title="Master Kategori" />} />
             <Route path="suppliers" element={<Placeholder title="Data Supplier" />} />
