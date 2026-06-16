@@ -4,7 +4,9 @@ const { connectRedis } = require('./config/redis');
 const PORT = process.env.PORT || 5001;
 
 async function startServer() {
-  await connectRedis();
+  connectRedis().catch((error) => {
+    void error;
+  });
 
   app.listen(PORT, () => {
     console.log(`KasirKu API running on http://localhost:${PORT}`);

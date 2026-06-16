@@ -1,28 +1,58 @@
 const { createClient } = require('redis');
 
 const redisConfig = {
+  url: process.env.REDIS_URL || '',
   host: process.env.REDIS_HOST || 'localhost',
   port: Number(process.env.REDIS_PORT || 6379),
+  username: process.env.REDIS_USERNAME || undefined,
   password: process.env.REDIS_PASSWORD || undefined,
   ttlSeconds: Number(process.env.REDIS_TTL_SECONDS || 300)
 };
 
 let redisClient = null;
 let connectingPromise = null;
+let hasLoggedError = false;
 
-function createRedisClient() {
-  const client = createClient({
+function createRedisClientOptions() {
+  const reconnectSocketConfig = {
+    reconnectStrategy: () => {
+      return 15000;
+    }
+  };
+
+  if (redisConfig.url) {
+    return {
+      url: redisConfig.url,
+      socket: reconnectSocketConfig
+    };
+  }
+
+  return {
+    username: redisConfig.username,
+    password: redisConfig.password,
     socket: {
+      ...reconnectSocketConfig,
       host: redisConfig.host,
       port: redisConfig.port
-    },
-    password: redisConfig.password
-  });
+    }
+  };
+}
+
+function createRedisClient() {
+  const client = createClient(createRedisClientOptions());
 
   client.on('error', (error) => {
-    console.error('Redis client error', {
-      message: error.message
-    });
+    if (!hasLoggedError) {
+      console.warn('Redis is offline. Application will run in fallback mode (querying MySQL database directly).', {
+        message: error.message || 'Connection refused'
+      });
+      hasLoggedError = true;
+    }
+  });
+
+  client.on('connect', () => {
+    console.log('Connected to Redis successfully');
+    hasLoggedError = false;
   });
 
   return client;
@@ -44,9 +74,18 @@ async function connectRedis() {
   }
 
   if (!connectingPromise) {
-    connectingPromise = client.connect().finally(() => {
-      connectingPromise = null;
-    });
+    connectingPromise = client.connect()
+      .catch((error) => {
+        if (!hasLoggedError) {
+          console.warn('Redis connection failed. Continuing server startup in database-only mode.', {
+            message: error.message || 'Connection refused'
+          });
+          hasLoggedError = true;
+        }
+      })
+      .finally(() => {
+        connectingPromise = null;
+      });
   }
 
   await connectingPromise;

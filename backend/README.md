@@ -11,7 +11,7 @@ cp .env.example .env
 npm run dev
 ```
 
-Server backend membutuhkan MySQL dan Redis lokal sesuai konfigurasi `.env`.
+Server backend membutuhkan MySQL sesuai konfigurasi `.env`. Redis dipakai untuk cache dan bisa memakai Redis lokal atau Redis Cloud.
 
 ## Setup Database
 
@@ -31,13 +31,22 @@ password: Admin12345
 
 ## Setup Redis
 
-Jalankan Redis pada host dan port sesuai `.env`:
+Untuk Redis lokal, jalankan Redis pada host dan port sesuai `.env`:
 
 ```text
 REDIS_HOST=localhost
 REDIS_PORT=6379
 REDIS_TTL_SECONDS=300
 ```
+
+Untuk Redis Cloud, gunakan connection string dari dashboard Redis Cloud pada `.env` lokal:
+
+```text
+REDIS_URL=redis://default:<password>@<host>:<port>
+REDIS_TTL_SECONDS=300
+```
+
+Jangan menyimpan nilai `REDIS_URL` asli ke repository karena berisi password database Redis.
 
 Cache Redis dipakai untuk `GET /api/products`, `GET /api/dashboard/summary`, dan dibersihkan saat data produk, kategori, supplier, atau transaksi penjualan berubah.
 
