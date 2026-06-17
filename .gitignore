@@ -39,3 +39,8 @@ Thumbs.db
 report/
 presentation/
 demo/
+
+# Local agent/design context
+.impeccable/
+PRODUCT.md
+DESIGN.md

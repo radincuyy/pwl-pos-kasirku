@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { customerService } from "../api/customerService";
+import { getApiErrorMessage } from "../api/error";
 import type { Customer, CustomerPayload } from "../api/customerService";
 
 interface CustomerState {
@@ -26,10 +27,8 @@ export const fetchCustomers = createAsyncThunk(
         return rejectWithValue(message || "Failed to fetch customers");
       }
       return data.customers;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to fetch customers"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to fetch customers"));
     }
   }
 );
@@ -44,10 +43,8 @@ export const fetchCustomerById = createAsyncThunk(
         return rejectWithValue(message || "Failed to fetch customer");
       }
       return data.customer;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to fetch customer"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to fetch customer"));
     }
   }
 );
@@ -62,10 +59,8 @@ export const createCustomer = createAsyncThunk(
         return rejectWithValue(message || "Failed to create customer");
       }
       return data.customer;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to create customer"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to create customer"));
     }
   }
 );
@@ -83,10 +78,8 @@ export const updateCustomer = createAsyncThunk(
         return rejectWithValue(message || "Failed to update customer");
       }
       return data.customer;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to update customer"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to update customer"));
     }
   }
 );
@@ -101,10 +94,8 @@ export const deleteCustomer = createAsyncThunk(
         return rejectWithValue(message || "Failed to delete customer");
       }
       return id;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to delete customer"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to delete customer"));
     }
   }
 );

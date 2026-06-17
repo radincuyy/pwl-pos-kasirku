@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { authService } from "../api/authService";
+import { getApiErrorMessage } from "../api/error";
 import type { LoginPayload, User } from "../api/authService";
 
 interface AuthState {
@@ -37,10 +38,8 @@ export const loginUser = createAsyncThunk(
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
       return data;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Something went wrong"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Something went wrong"));
     }
   }
 );
@@ -50,7 +49,8 @@ export const logoutUser = createAsyncThunk(
   async () => {
     try {
       await authService.logout();
-    } catch {
+    } catch (error) {
+      void error;
     } finally {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
@@ -69,12 +69,10 @@ export const checkAuthMe = createAsyncThunk(
       }
       localStorage.setItem("user", JSON.stringify(data.user));
       return data.user;
-    } catch (err: any) {
+    } catch (error) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Unauthorized"
-      );
+      return rejectWithValue(getApiErrorMessage(error, "Unauthorized"));
     }
   }
 );

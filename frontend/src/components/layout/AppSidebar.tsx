@@ -1,23 +1,21 @@
 "use client"
 
-import * as React from "react"
+import { useState, type ReactNode } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
+import { Box, FileText, Home, LogOut, ShoppingCart, Tag, Truck, Users } from "lucide-react"
 import {
   SidebarContent,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
-  SidebarMenuButton,
 } from "@/components/ui/sidebar"
-import { Home, Box, Tag, Truck, Users, FileText, ShoppingCart, LogOut } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "@/store"
-import { logoutUser, localLogout } from "@/store/authSlice"
-import { useState } from "react"
+import { localLogout, logoutUser } from "@/store/authSlice"
 
 type MenuItem = {
   label: string
   path: string
-  icon?: React.ReactNode
+  icon: ReactNode
 }
 
 const menus: MenuItem[] = [
@@ -34,14 +32,14 @@ export function AppSidebar() {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
-  const user = useAppSelector((s) => s.auth.user)
+  const user = useAppSelector((state) => state.auth.user)
 
   const handleLogout = async () => {
     try {
       setLoading(true)
       await dispatch(logoutUser()).unwrap()
-    } catch (err) {
-      // ignore
+    } catch (error) {
+      void error
     } finally {
       setLoading(false)
       dispatch(localLogout())
@@ -60,44 +58,48 @@ export function AppSidebar() {
 
       <SidebarContent className="px-2 py-2 flex-1">
         <SidebarMenu>
-          {menus.map((m) => (
-            <SidebarMenuItem key={m.path}>
-              <NavLink to={m.path} end={m.path === "/"}>
-                {({ isActive }) => (
-                  <SidebarMenuButton asChild isActive={!!isActive}>
-                    <a
-                      className={
-                        "flex items-center gap-3 px-3 py-2 rounded-md transition-colors " +
-                        (isActive
-                          ? "bg-accent/20 text-accent-foreground font-medium"
-                          : "text-muted-foreground hover:bg-accent/10")
-                      }
-                    >
-                      <span className="text-muted-foreground group-data-[active=true]:text-accent-foreground">{m.icon}</span>
-                      <span className="truncate">{m.label}</span>
-                    </a>
-                  </SidebarMenuButton>
-                )}
+          {menus.map((menu) => (
+            <SidebarMenuItem key={menu.path}>
+              <NavLink
+                to={menu.path}
+                end={menu.path === "/"}
+                className={({ isActive }) =>
+                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors " +
+                  (isActive
+                    ? "bg-accent/20 text-accent-foreground font-medium"
+                    : "text-muted-foreground hover:bg-accent/10 hover:text-foreground")
+                }
+              >
+                <span className="text-current">{menu.icon}</span>
+                <span className="truncate">{menu.label}</span>
               </NavLink>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
 
         <div className="mt-4 px-3">
-          <NavLink to="/sales/new">
-            {({ isActive }) => (
-              <button className={"w-full flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium " + (isActive ? "bg-primary text-primary-foreground" : "bg-primary/90 text-primary-foreground hover:brightness-105") }>
-                <ShoppingCart className="size-4" />
-                New Sale
-              </button>
-            )}
+          <NavLink
+            to="/sales/new"
+            className={({ isActive }) =>
+              "flex w-full items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium " +
+              (isActive
+                ? "bg-primary text-primary-foreground"
+                : "bg-primary/90 text-primary-foreground hover:brightness-105")
+            }
+          >
+            <ShoppingCart className="size-4" />
+            New Sale
           </NavLink>
         </div>
       </SidebarContent>
 
       <div className="px-3 py-3 border-t">
         <div className="text-xs text-muted-foreground mb-2">{user?.email}</div>
-        <button onClick={handleLogout} disabled={loading} className="w-full flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-destructive/10">
+        <button
+          onClick={handleLogout}
+          disabled={loading}
+          className="w-full flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-destructive/10"
+        >
           <LogOut className="size-4" />
           {loading ? "Logging out..." : "Logout"}
         </button>
@@ -106,4 +108,4 @@ export function AppSidebar() {
   )
 }
 
-export default AppSidebar;
+export default AppSidebar

@@ -1,14 +1,9 @@
-import * as React from "react"
 import { Suspense } from "react"
-import { Routes, Route, Navigate } from "react-router-dom"
-import ProtectedRoute from "@/components/layout/ProtectedRoute"
+import { Navigate, Route, Routes } from "react-router-dom"
 import DashboardLayout from "@/components/layout/DashboardLayout"
-
-import LoginPage from "@/pages/LoginPage";
-import DashboardPage from "@/pages/DashboardPage";
-
-// Minimal inline pages — these are lightweight placeholders so routing works.
-// Real pages should be implemented separately and wired here when ready.
+import ProtectedRoute from "@/components/layout/ProtectedRoute"
+import DashboardPage from "@/pages/DashboardPage"
+import LoginPage from "@/pages/LoginPage"
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -42,4 +37,3 @@ export default function App() {
     </Suspense>
   )
 }
-

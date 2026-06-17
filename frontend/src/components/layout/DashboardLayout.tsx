@@ -1,23 +1,23 @@
 "use client"
 
+import { useState } from "react"
 import { Outlet, useNavigate } from "react-router-dom"
-import { useAppSelector, useAppDispatch } from "@/store"
-import {
-  SidebarProvider,
-  Sidebar,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
 import AppSidebar from "./AppSidebar"
-import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { logoutUser, localLogout } from "@/store/authSlice"
-import { useState } from "react"
+import {
+  Sidebar,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
+import { useAppDispatch, useAppSelector } from "@/store"
+import { localLogout, logoutUser } from "@/store/authSlice"
 
 export default function DashboardLayout() {
   const user = useAppSelector((state) => state.auth.user)
@@ -29,11 +29,10 @@ export default function DashboardLayout() {
     try {
       setLoggingOut(true)
       await dispatch(logoutUser()).unwrap()
-    } catch (err) {
-      // ignore network error — still perform local logout
+    } catch (error) {
+      void error
     } finally {
       setLoggingOut(false)
-      // ensure local redux state is cleared even if API logout failed
       dispatch(localLogout())
       navigate("/login", { replace: true })
     }
@@ -42,7 +41,7 @@ export default function DashboardLayout() {
   const initials = user?.name
     ? user.name
         .split(" ")
-        .map((p) => p[0])
+        .map((part) => part[0])
         .slice(0, 2)
         .join("")
         .toUpperCase()
@@ -51,7 +50,6 @@ export default function DashboardLayout() {
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex flex-col bg-background text-foreground">
-        {/* Header */}
         <header className="flex items-center justify-between border-b px-4 py-3">
           <div className="flex items-center gap-3">
             <SidebarTrigger />
@@ -59,7 +57,9 @@ export default function DashboardLayout() {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="hidden sm:block text-sm text-muted-foreground">Halo, {user?.name ?? "Pengguna"}</div>
+            <div className="hidden sm:block text-sm text-muted-foreground">
+              Halo, {user?.name ?? "Pengguna"}
+            </div>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -80,7 +80,6 @@ export default function DashboardLayout() {
           </div>
         </header>
 
-        {/* Body: Sidebar + Content */}
         <div className="flex flex-1 min-h-0">
           <Sidebar className="w-64" collapsible="icon">
             <AppSidebar />

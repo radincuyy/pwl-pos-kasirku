@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { saleService } from "../api/saleService";
+import { getApiErrorMessage } from "../api/error";
 import type { SaleSummary, SaleDetail, SalePayload } from "../api/saleService";
 import type { Product } from "../api/productService";
 
@@ -42,10 +43,8 @@ export const fetchSales = createAsyncThunk(
         return rejectWithValue(message || "Failed to fetch sales");
       }
       return data.sales;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to fetch sales"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to fetch sales"));
     }
   }
 );
@@ -60,10 +59,8 @@ export const fetchSaleById = createAsyncThunk(
         return rejectWithValue(message || "Failed to fetch sale details");
       }
       return data.sale;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to fetch sale details"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to fetch sale details"));
     }
   }
 );
@@ -78,10 +75,8 @@ export const createSale = createAsyncThunk(
         return rejectWithValue(message || "Failed to process sale");
       }
       return data.sale;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to process sale"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to process sale"));
     }
   }
 );

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { dashboardService } from "../api/dashboardService";
+import { getApiErrorMessage } from "../api/error";
 import type { DashboardSummary } from "../api/dashboardService";
 
 interface DashboardState {
@@ -24,10 +25,8 @@ export const fetchDashboardSummary = createAsyncThunk(
         return rejectWithValue(message || "Failed to fetch dashboard summary");
       }
       return data.summary;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to fetch dashboard summary"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to fetch dashboard summary"));
     }
   }
 );

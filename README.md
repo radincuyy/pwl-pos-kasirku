@@ -36,7 +36,9 @@ pwl-pos-kasirku/
 |   |   |-- api/       # Axios instance + service modules
 |   |   |-- components/# shadcn/ui components
 |   |   |-- hooks/     # Custom hooks
-|   |   `-- lib/       # Utility functions
+|   |   |-- lib/       # Utility functions
+|   |   |-- pages/     # Halaman aplikasi
+|   |   `-- store/     # Redux store dan slices
 |   `-- public/
 |-- backend/           # NodeJS Express REST API
 |   `-- src/
@@ -51,7 +53,12 @@ pwl-pos-kasirku/
 
 ## Status Progress
 
+### Fase Saat Ini
+
+Project saat ini berada di **Phase 6: Halaman CRUD Master**. Phase sebelumnya sudah mencakup backend, Redux, layout/routing, login, dan dashboard. Build dan lint frontend sudah bersih, sehingga pengerjaan berikutnya bisa masuk ke halaman CRUD produk, kategori, supplier, dan pelanggan.
+
 ### Backend
+
 - [x] Setup backend Express
 - [x] Setup koneksi database MySQL
 - [x] Implementasi authentication (JWT + bcrypt)
@@ -65,29 +72,40 @@ pwl-pos-kasirku/
 - [x] Implementasi endpoint dashboard summary
 
 ### Frontend
+
 - [x] Setup frontend React + Vite + TypeScript
 - [x] Integrasi Tailwind CSS v4
 - [x] Integrasi shadcn/ui (17 komponen)
 - [x] Setup Axios instance dan interceptors
 - [x] Implementasi API service modules (7 modul)
-- [ ] Implementasi Redux store dan slices
-- [ ] Implementasi layout dan routing
-- [ ] Implementasi halaman login
-- [ ] Implementasi halaman dashboard
+- [x] Implementasi Redux store dan slices
+- [x] Implementasi layout dan routing
+- [x] Implementasi halaman login
+- [x] Implementasi halaman dashboard
+- [x] Integrasi awal frontend-backend (login + dashboard)
 - [ ] Implementasi halaman CRUD (produk, kategori, supplier, pelanggan)
 - [ ] Implementasi halaman transaksi POS
-- [ ] Integrasi frontend-backend
+- [ ] Integrasi frontend-backend seluruh modul
+- [x] Perbaikan build dan lint frontend
 
 ### Dokumentasi & Lainnya
+
 - [x] Menentukan studi kasus: Sistem Point of Sales
 - [x] Membuat repository awal
 - [x] Menyiapkan dokumen requirement awal
 - [x] Membuat draft desain database
 - [x] Membuat ERD final
+- [x] Testing backend automated
 - [ ] Finalisasi laporan (BAB IV, VI, VII, VIII)
 - [ ] Slide presentasi
 - [ ] Video demo
-- [ ] Testing
+- [ ] Testing frontend final
+- [ ] Testing end-to-end/manual flow
+
+### Status Validasi
+
+- Backend: `npm test` berhasil dengan 7 file test dan 23 test passed.
+- Frontend: `npm run build` dan `npm run lint` berhasil. Halaman login dan dashboard sudah tersedia sebagai dasar sebelum Phase 6.
 
 ## Branch Workflow
 
@@ -99,15 +117,23 @@ pwl-pos-kasirku/
 
 | Branch | Status |
 |---|---|
-| `feature-backend-auth` | ✅ Merged |
-| `feature-backend-categories` | ✅ Merged |
-| `feature-backend-suppliers` | ✅ Merged |
-| `feature-backend-products` | ✅ Merged |
-| `feature-backend-customers` | ✅ Merged |
-| `feature-backend-sales` | ✅ Merged |
-| `feature-backend-redis-cache` | ✅ Merged |
-| `feature/frontend-setup` | ✅ Merged |
-| `feature/api-layer` | ✅ Merged |
+| `feature-backend-auth` | Merged |
+| `feature-backend-categories` | Merged |
+| `feature-backend-suppliers` | Merged |
+| `feature-backend-products` | Merged |
+| `feature-backend-customers` | Merged |
+| `feature-backend-sales` | Merged |
+| `feature-backend-redis-cache` | Merged |
+| `feature/frontend-setup` | Merged |
+| `feature/api-layer` | Merged |
+| `feature/redux-store` | Merged |
+| `feature/redux-slices` | Merged |
+| `feature/layout-dashboard-sidebar` | Merged |
+| `feature/protected-route-konfigurasi-routing` | Merged |
+| `feature/auth-page` | Merged |
+| `feature/dashboard-page` | Merged |
+| `feature/crud-pages` | Next |
+| `feature/sales-pages` | Planned |
 
 ## Cara Menjalankan
 
@@ -117,7 +143,7 @@ pwl-pos-kasirku/
 cd backend
 npm install
 cp .env.example .env
-# Sesuaikan .env dengan konfigurasi MySQL dan Redis lokal
+# Sesuaikan .env dengan konfigurasi MySQL dan Redis
 npm run dev
 ```
 

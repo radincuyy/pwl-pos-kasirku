@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { supplierService } from "../api/supplierService";
+import { getApiErrorMessage } from "../api/error";
 import type { Supplier, SupplierPayload } from "../api/supplierService";
 
 interface SupplierState {
@@ -26,10 +27,8 @@ export const fetchSuppliers = createAsyncThunk(
         return rejectWithValue(message || "Failed to fetch suppliers");
       }
       return data.suppliers;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to fetch suppliers"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to fetch suppliers"));
     }
   }
 );
@@ -44,10 +43,8 @@ export const fetchSupplierById = createAsyncThunk(
         return rejectWithValue(message || "Failed to fetch supplier");
       }
       return data.supplier;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to fetch supplier"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to fetch supplier"));
     }
   }
 );
@@ -62,10 +59,8 @@ export const createSupplier = createAsyncThunk(
         return rejectWithValue(message || "Failed to create supplier");
       }
       return data.supplier;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to create supplier"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to create supplier"));
     }
   }
 );
@@ -83,10 +78,8 @@ export const updateSupplier = createAsyncThunk(
         return rejectWithValue(message || "Failed to update supplier");
       }
       return data.supplier;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to update supplier"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to update supplier"));
     }
   }
 );
@@ -101,10 +94,8 @@ export const deleteSupplier = createAsyncThunk(
         return rejectWithValue(message || "Failed to delete supplier");
       }
       return id;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to delete supplier"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to delete supplier"));
     }
   }
 );

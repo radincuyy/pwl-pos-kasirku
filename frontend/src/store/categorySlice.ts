@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { categoryService } from "../api/categoryService";
+import { getApiErrorMessage } from "../api/error";
 import type { Category, CategoryPayload } from "../api/categoryService";
 
 interface CategoryState {
@@ -26,10 +27,8 @@ export const fetchCategories = createAsyncThunk(
         return rejectWithValue(message || "Failed to fetch categories");
       }
       return data.categories;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to fetch categories"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to fetch categories"));
     }
   }
 );
@@ -44,10 +43,8 @@ export const fetchCategoryById = createAsyncThunk(
         return rejectWithValue(message || "Failed to fetch category");
       }
       return data.category;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to fetch category"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to fetch category"));
     }
   }
 );
@@ -62,10 +59,8 @@ export const createCategory = createAsyncThunk(
         return rejectWithValue(message || "Failed to create category");
       }
       return data.category;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to create category"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to create category"));
     }
   }
 );
@@ -83,10 +78,8 @@ export const updateCategory = createAsyncThunk(
         return rejectWithValue(message || "Failed to update category");
       }
       return data.category;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to update category"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to update category"));
     }
   }
 );
@@ -101,10 +94,8 @@ export const deleteCategory = createAsyncThunk(
         return rejectWithValue(message || "Failed to delete category");
       }
       return id;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to delete category"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to delete category"));
     }
   }
 );

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { productService } from "../api/productService";
+import { getApiErrorMessage } from "../api/error";
 import type { Product, ProductPayload } from "../api/productService";
 
 interface ProductState {
@@ -26,10 +27,8 @@ export const fetchProducts = createAsyncThunk(
         return rejectWithValue(message || "Failed to fetch products");
       }
       return data.products;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to fetch products"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to fetch products"));
     }
   }
 );
@@ -44,10 +43,8 @@ export const fetchProductById = createAsyncThunk(
         return rejectWithValue(message || "Failed to fetch product");
       }
       return data.product;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to fetch product"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to fetch product"));
     }
   }
 );
@@ -62,10 +59,8 @@ export const createProduct = createAsyncThunk(
         return rejectWithValue(message || "Failed to create product");
       }
       return data.product;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to create product"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to create product"));
     }
   }
 );
@@ -83,10 +78,8 @@ export const updateProduct = createAsyncThunk(
         return rejectWithValue(message || "Failed to update product");
       }
       return data.product;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to update product"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to update product"));
     }
   }
 );
@@ -101,10 +94,8 @@ export const deleteProduct = createAsyncThunk(
         return rejectWithValue(message || "Failed to delete product");
       }
       return id;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || err.message || "Failed to delete product"
-      );
+    } catch (error) {
+      return rejectWithValue(getApiErrorMessage(error, "Failed to delete product"));
     }
   }
 );
