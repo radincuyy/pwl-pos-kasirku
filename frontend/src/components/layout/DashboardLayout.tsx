@@ -1,25 +1,52 @@
 "use client"
 
-import * as React from "react"
-import { Outlet } from "react-router-dom"
-import { useAppSelector } from "@/store"
+import { Outlet, useNavigate } from "react-router-dom"
+import { useAppSelector, useAppDispatch } from "@/store"
 import {
   SidebarProvider,
   Sidebar,
-  SidebarInset,
   SidebarTrigger,
-  SidebarRail,
 } from "@/components/ui/sidebar"
 import AppSidebar from "./AppSidebar"
 import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu"
+import { logoutUser, localLogout } from "@/store/authSlice"
+import { useState } from "react"
 
 export default function DashboardLayout() {
   const user = useAppSelector((state) => state.auth.user)
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+  const [loggingOut, setLoggingOut] = useState(false)
 
-  const handleLogout = () => {
-    // Placeholder handler per AGENT.md — actual logout implemented in later task
-    console.log("logout placeholder")
+  const handleLogout = async () => {
+    try {
+      setLoggingOut(true)
+      await dispatch(logoutUser()).unwrap()
+    } catch (err) {
+      // ignore network error — still perform local logout
+    } finally {
+      setLoggingOut(false)
+      // ensure local redux state is cleared even if API logout failed
+      dispatch(localLogout())
+      navigate("/login", { replace: true })
+    }
   }
+
+  const initials = user?.name
+    ? user.name
+        .split(" ")
+        .map((p) => p[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase()
+    : "U"
 
   return (
     <SidebarProvider defaultOpen={true}>
@@ -32,10 +59,24 @@ export default function DashboardLayout() {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="text-sm">Halo, {user?.name ?? "Pengguna"}</div>
-            <Button variant="ghost" size="sm" onClick={handleLogout}>
-              Logout
-            </Button>
+            <div className="hidden sm:block text-sm text-muted-foreground">Halo, {user?.name ?? "Pengguna"}</div>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="px-1">
+                  <Avatar>
+                    <AvatarFallback>{initials}</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent align="end">
+                <div className="px-3 py-2 text-xs text-muted-foreground">{user?.email}</div>
+                <DropdownMenuItem onSelect={handleLogout} data-variant="destructive">
+                  {loggingOut ? "Logging out..." : "Logout"}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </header>
 
