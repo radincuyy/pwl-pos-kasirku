@@ -55,7 +55,7 @@ pwl-pos-kasirku/
 
 ### Fase Saat Ini
 
-Project saat ini berada di **Phase 6: Halaman CRUD Master**. Phase sebelumnya sudah mencakup backend, Redux, layout/routing, login, dan dashboard. Build dan lint frontend sudah bersih, sehingga pengerjaan berikutnya bisa masuk ke halaman CRUD produk, kategori, supplier, dan pelanggan.
+Project saat ini berada di **Phase 7: Transaksi POS dan Riwayat Penjualan**. Phase 6 sudah mencakup halaman CRUD produk, kategori, supplier, dan pelanggan yang terhubung ke Redux serta REST API. Pengerjaan berikutnya berfokus pada antarmuka kasir, pembuatan transaksi, dan riwayat penjualan.
 
 ### Backend
 
@@ -83,9 +83,10 @@ Project saat ini berada di **Phase 6: Halaman CRUD Master**. Phase sebelumnya su
 - [x] Implementasi halaman login
 - [x] Implementasi halaman dashboard
 - [x] Integrasi awal frontend-backend (login + dashboard)
-- [ ] Implementasi halaman CRUD (produk, kategori, supplier, pelanggan)
+- [x] Implementasi halaman CRUD (produk, kategori, supplier, pelanggan)
 - [ ] Implementasi halaman transaksi POS
-- [ ] Integrasi frontend-backend seluruh modul
+- [x] Integrasi frontend-backend modul produk, kategori, supplier, dan pelanggan
+- [ ] Integrasi frontend-backend modul transaksi
 - [x] Perbaikan build dan lint frontend
 
 ### Dokumentasi & Lainnya
@@ -105,7 +106,7 @@ Project saat ini berada di **Phase 6: Halaman CRUD Master**. Phase sebelumnya su
 ### Status Validasi
 
 - Backend: `npm test` berhasil dengan 7 file test dan 23 test passed.
-- Frontend: `npm run build` dan `npm run lint` berhasil. Halaman login dan dashboard sudah tersedia sebagai dasar sebelum Phase 6.
+- Frontend: `npm run build` dan `npm run lint` berhasil. Halaman login, dashboard, serta CRUD kategori, supplier, pelanggan, dan produk sudah tersedia.
 
 ## Branch Workflow
 
@@ -132,8 +133,8 @@ Project saat ini berada di **Phase 6: Halaman CRUD Master**. Phase sebelumnya su
 | `feature/protected-route-konfigurasi-routing` | Merged |
 | `feature/auth-page` | Merged |
 | `feature/dashboard-page` | Merged |
-| `feature/crud-pages` | Next |
-| `feature/sales-pages` | Planned |
+| `feature/crud-pages` | Implemented |
+| `feature/sales-pages` | Next |
 
 ## Cara Menjalankan
 

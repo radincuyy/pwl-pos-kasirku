@@ -4,10 +4,10 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 
 const routeTitles: Record<string, string> = {
   "/": "Dashboard",
-  "/products": "Master Produk",
-  "/categories": "Master Kategori",
-  "/suppliers": "Data Supplier",
-  "/customers": "Data Pelanggan",
+  "/products": "Produk",
+  "/categories": "Kategori",
+  "/suppliers": "Supplier",
+  "/customers": "Pelanggan",
   "/sales": "Riwayat Penjualan",
   "/sales/new": "Transaksi Baru",
 }

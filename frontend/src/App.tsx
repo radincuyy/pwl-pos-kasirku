@@ -1,9 +1,14 @@
-import { Suspense } from "react"
+import { lazy, Suspense } from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
 import DashboardLayout from "@/components/layout/DashboardLayout"
 import ProtectedRoute from "@/components/layout/ProtectedRoute"
-import DashboardPage from "@/pages/DashboardPage"
-import LoginPage from "@/pages/LoginPage"
+
+const CategoriesPage = lazy(() => import("@/pages/CategoriesPage"))
+const CustomersPage = lazy(() => import("@/pages/CustomersPage"))
+const DashboardPage = lazy(() => import("@/pages/DashboardPage"))
+const LoginPage = lazy(() => import("@/pages/LoginPage"))
+const ProductsPage = lazy(() => import("@/pages/ProductsPage"))
+const SuppliersPage = lazy(() => import("@/pages/SuppliersPage"))
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -16,17 +21,23 @@ function Placeholder({ title }: { title: string }) {
 
 export default function App() {
   return (
-    <Suspense>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">
+          Memuat halaman...
+        </div>
+      }
+    >
       <Routes>
         <Route path="/login" element={<LoginPage />} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
             <Route index element={<DashboardPage />} />
-            <Route path="products" element={<Placeholder title="Master Produk" />} />
-            <Route path="categories" element={<Placeholder title="Master Kategori" />} />
-            <Route path="suppliers" element={<Placeholder title="Data Supplier" />} />
-            <Route path="customers" element={<Placeholder title="Data Pelanggan" />} />
+            <Route path="products" element={<ProductsPage />} />
+            <Route path="categories" element={<CategoriesPage />} />
+            <Route path="suppliers" element={<SuppliersPage />} />
+            <Route path="customers" element={<CustomersPage />} />
             <Route path="sales" element={<Placeholder title="Riwayat Penjualan" />} />
             <Route path="sales/new" element={<Placeholder title="Transaksi Baru (POS)" />} />
           </Route>
