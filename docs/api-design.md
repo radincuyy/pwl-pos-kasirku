@@ -28,13 +28,13 @@ http://localhost:5001/api
 
 ## Products
 
-| Method | Endpoint | Deskripsi | Auth |
-|---|---|---|---|
-| GET | `/products` | List produk | Yes |
-| POST | `/products` | Tambah produk | Yes |
-| GET | `/products/:id` | Detail produk | Yes |
-| PUT | `/products/:id` | Update produk | Yes |
-| DELETE | `/products/:id` | Hapus produk | Yes |
+| Method | Endpoint | Deskripsi | Auth | Cache |
+|---|---|---|---|---|
+| GET | `/products` | List produk | Yes | Redis |
+| POST | `/products` | Tambah produk | Yes | - |
+| GET | `/products/:id` | Detail produk | Yes | - |
+| PUT | `/products/:id` | Update produk | Yes | - |
+| DELETE | `/products/:id` | Hapus produk | Yes | - |
 
 ## Categories
 

@@ -2,6 +2,7 @@ const crypto = require('crypto');
 
 const { pool } = require('../config/database');
 const createHttpError = require('../utils/createHttpError');
+const { clearProductsCache } = require('../utils/cache');
 
 const paymentMethods = ['cash', 'transfer', 'qris', 'debit'];
 
@@ -219,6 +220,8 @@ async function getSaleById(req, res) {
 
 async function createSale(req, res) {
   const payload = normalizeSalePayload(req.body);
+  await clearProductsCache();
+
   const connection = await pool.getConnection();
   let saleId = null;
 

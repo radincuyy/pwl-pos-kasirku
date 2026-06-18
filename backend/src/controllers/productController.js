@@ -1,5 +1,6 @@
 const { pool } = require('../config/database');
 const createHttpError = require('../utils/createHttpError');
+const { cacheKeys, clearProductsCache, getCache, setCache } = require('../utils/cache');
 
 function toProductResponse(product) {
   return {
@@ -135,6 +136,18 @@ async function findProductById(id) {
 }
 
 async function getProducts(req, res) {
+  const cachedProducts = await getCache(cacheKeys.productsList);
+
+  if (cachedProducts) {
+    return res.status(200).json({
+      success: true,
+      message: 'Data produk berhasil diambil',
+      data: {
+        products: cachedProducts
+      }
+    });
+  }
+
   const [rows] = await pool.execute(
     `SELECT products.id, products.category_id, products.supplier_id, products.sku,
             products.name, products.purchase_price, products.selling_price,
@@ -147,11 +160,15 @@ async function getProducts(req, res) {
      ORDER BY products.id DESC`
   );
 
+  const products = rows.map(toProductResponse);
+
+  await setCache(cacheKeys.productsList, products);
+
   return res.status(200).json({
     success: true,
     message: 'Data produk berhasil diambil',
     data: {
-      products: rows.map(toProductResponse)
+      products
     }
   });
 }
@@ -175,6 +192,7 @@ async function getProductById(req, res) {
 async function createProduct(req, res) {
   const payload = normalizeProductPayload(req.body);
   await ensureProductRelations(payload);
+  await clearProductsCache();
 
   try {
     const [result] = await pool.execute(
@@ -219,6 +237,7 @@ async function updateProduct(req, res) {
   }
 
   await ensureProductRelations(payload);
+  await clearProductsCache();
 
   try {
     await pool.execute(
@@ -262,6 +281,8 @@ async function deleteProduct(req, res) {
   if (!existingProduct) {
     throw createHttpError(404, 'Produk tidak ditemukan');
   }
+
+  await clearProductsCache();
 
   try {
     await pool.execute('DELETE FROM products WHERE id = ?', [req.params.id]);

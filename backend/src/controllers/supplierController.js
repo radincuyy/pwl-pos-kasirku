@@ -1,5 +1,6 @@
 const { pool } = require('../config/database');
 const createHttpError = require('../utils/createHttpError');
+const { clearProductsCache } = require('../utils/cache');
 
 function toSupplierResponse(supplier) {
   return {
@@ -99,6 +100,8 @@ async function updateSupplier(req, res) {
     throw createHttpError(404, 'Supplier tidak ditemukan');
   }
 
+  await clearProductsCache();
+
   await pool.execute(
     `UPDATE suppliers
      SET name = ?, phone = ?, address = ?
@@ -123,6 +126,8 @@ async function deleteSupplier(req, res) {
   if (!existingSupplier) {
     throw createHttpError(404, 'Supplier tidak ditemukan');
   }
+
+  await clearProductsCache();
 
   try {
     await pool.execute('DELETE FROM suppliers WHERE id = ?', [req.params.id]);
