@@ -22,11 +22,13 @@ mysql -u root -p < ../database/schema.sql
 mysql -u root -p < ../database/seed.sql
 ```
 
-Seed awal membuat user admin untuk kebutuhan pengujian lokal:
+Seed awal membuat data pengujian berupa 3 akun, 5 kategori, 4 supplier,
+5 pelanggan, dan 12 produk dengan variasi stok normal, rendah, dan habis.
 
 ```text
-email: admin@kasirku.test
-password: Admin12345
+admin@kasirku.test / Admin12345
+kasir@kasirku.test / Admin12345
+owner@kasirku.test / Admin12345
 ```
 
 ## Setup Redis
