@@ -60,7 +60,7 @@ pwl-pos-kasirku/
 
 ### Fase Saat Ini
 
-Project saat ini berada di **Phase 7: Transaksi POS dan Riwayat Penjualan**. Phase 6 sudah mencakup halaman CRUD produk, kategori, supplier, dan pelanggan yang terhubung ke Redux serta REST API. Pengerjaan berikutnya berfokus pada antarmuka kasir, pembuatan transaksi, dan riwayat penjualan.
+Project saat ini berada di **Phase 7: Validasi Transaksi POS dan Riwayat Penjualan**. Antarmuka kasir, checkout transaksi, riwayat penjualan, serta detail invoice sudah diimplementasikan. Pengerjaan berikutnya berfokus pada pengujian alur transaksi menggunakan backend dan database lokal.
 
 ### Backend
 
@@ -89,9 +89,9 @@ Project saat ini berada di **Phase 7: Transaksi POS dan Riwayat Penjualan**. Pha
 - [x] Implementasi halaman dashboard
 - [x] Integrasi awal frontend-backend (login + dashboard)
 - [x] Implementasi halaman CRUD (produk, kategori, supplier, pelanggan)
-- [ ] Implementasi halaman transaksi POS
+- [x] Implementasi halaman transaksi POS
 - [x] Integrasi frontend-backend modul produk, kategori, supplier, dan pelanggan
-- [ ] Integrasi frontend-backend modul transaksi
+- [x] Integrasi frontend-backend modul transaksi
 - [x] Perbaikan build dan lint frontend
 
 ### Dokumentasi & Lainnya
@@ -111,7 +111,7 @@ Project saat ini berada di **Phase 7: Transaksi POS dan Riwayat Penjualan**. Pha
 ### Status Validasi
 
 - Backend: `npm test` berhasil dengan 7 file test dan 23 test passed.
-- Frontend: `npm run build` dan `npm run lint` berhasil. Halaman login, dashboard, serta CRUD kategori, supplier, pelanggan, dan produk sudah tersedia.
+- Frontend: `npm run build` dan `npm run lint` berhasil. Halaman login, dashboard, CRUD data, transaksi POS, riwayat penjualan, dan detail invoice sudah tersedia.
 
 ## Branch Workflow
 
@@ -139,7 +139,7 @@ Project saat ini berada di **Phase 7: Transaksi POS dan Riwayat Penjualan**. Pha
 | `feature/auth-page` | Merged |
 | `feature/dashboard-page` | Merged |
 | `feature/crud-pages` | Implemented |
-| `feature/sales-pages` | Next |
+| `feature/sales-pages` | In Progress |
 
 ## Cara Menjalankan
 
