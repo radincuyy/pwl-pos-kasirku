@@ -19,6 +19,8 @@ export default function SalesHistoryPage() {
   const { sales, currentSale, loading, error } = useAppSelector(
     (state) => state.sales
   )
+  const role = useAppSelector((state) => state.auth.user?.role)
+  const canCreateSales = role === "admin" || role === "kasir"
   const [search, setSearch] = useState("")
   const [detailOpen, setDetailOpen] = useState(false)
 
@@ -72,12 +74,14 @@ export default function SalesHistoryPage() {
             Telusuri transaksi dan periksa detail invoice.
           </p>
         </div>
-        <Button asChild>
-          <Link to="/sales/new">
-            <PlusIcon />
-            Transaksi baru
-          </Link>
-        </Button>
+        {canCreateSales && (
+          <Button asChild>
+            <Link to="/sales/new">
+              <PlusIcon />
+              Transaksi baru
+            </Link>
+          </Button>
+        )}
       </div>
 
       <div className="relative w-full max-w-sm">

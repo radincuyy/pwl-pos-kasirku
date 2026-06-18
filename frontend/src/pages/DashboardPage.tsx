@@ -55,6 +55,9 @@ function SummaryCard({ title, value, description, icon }: SummaryCardProps) {
 export default function DashboardPage() {
   const dispatch = useAppDispatch()
   const { summary, loading, error } = useAppSelector((state) => state.dashboard)
+  const role = useAppSelector((state) => state.auth.user?.role)
+  const canViewProducts = role === "admin" || role === "owner"
+  const canCreateSales = role === "admin"
 
   useEffect(() => {
     dispatch(fetchDashboardSummary())
@@ -113,12 +116,14 @@ export default function DashboardPage() {
             Ringkasan aktivitas penjualan dan stok toko.
           </p>
         </div>
-        <Button asChild>
-          <Link to="/sales/new">
-            <ShoppingCartIcon className="size-4" />
-            Transaksi baru
-          </Link>
-        </Button>
+        {canCreateSales && (
+          <Button asChild>
+            <Link to="/sales/new">
+              <ShoppingCartIcon className="size-4" />
+              Transaksi baru
+            </Link>
+          </Button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -149,9 +154,11 @@ export default function DashboardPage() {
               <CardTitle>Produk stok rendah</CardTitle>
               <CardDescription>Produk yang perlu segera diperiksa.</CardDescription>
             </div>
-            <Button asChild variant="outline" size="sm">
-              <Link to="/products">Lihat produk</Link>
-            </Button>
+            {canViewProducts && (
+              <Button asChild variant="outline" size="sm">
+                <Link to="/products">Lihat produk</Link>
+              </Button>
+            )}
           </CardHeader>
           <CardContent>
             {summary.lowStockProducts.length === 0 ? (

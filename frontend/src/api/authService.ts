@@ -1,4 +1,5 @@
 import api from "./axios";
+import type { UserRole } from "@/lib/access-control";
 
 export interface LoginPayload {
   email: string;
@@ -9,7 +10,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  role: string;
+  role: UserRole;
 }
 
 export interface LoginResponse {

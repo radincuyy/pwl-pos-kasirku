@@ -94,6 +94,8 @@ export default function ProductsPage() {
   const { products, loading, error } = useAppSelector((state) => state.products)
   const categories = useAppSelector((state) => state.categories.categories)
   const suppliers = useAppSelector((state) => state.suppliers.suppliers)
+  const role = useAppSelector((state) => state.auth.user?.role)
+  const canManageProducts = role === "admin"
   const [search, setSearch] = useState("")
   const [form, setForm] = useState<ProductForm>(emptyForm)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
@@ -104,9 +106,11 @@ export default function ProductsPage() {
 
   useEffect(() => {
     dispatch(fetchProducts())
-    dispatch(fetchCategories())
-    dispatch(fetchSuppliers())
-  }, [dispatch])
+    if (canManageProducts) {
+      dispatch(fetchCategories())
+      dispatch(fetchSuppliers())
+    }
+  }, [canManageProducts, dispatch])
 
   const filteredProducts = useMemo(() => {
     const keyword = search.trim().toLowerCase()
@@ -225,17 +229,18 @@ export default function ProductsPage() {
     setForm((current) => ({ ...current, [field]: value }))
     setFormError(null)
   }
+  const tableColumnCount = canManageProducts ? 6 : 5
 
   return (
     <ManagementPageLayout
       title="Produk"
       description="Kelola identitas produk, harga, supplier, dan stok."
-      addLabel="Tambah produk"
+      addLabel={canManageProducts ? "Tambah produk" : undefined}
       searchValue={search}
       searchPlaceholder="Cari SKU, produk, kategori, atau supplier..."
       message={message}
       error={error}
-      onAdd={openCreateForm}
+      onAdd={canManageProducts ? openCreateForm : undefined}
       onSearchChange={setSearch}
     >
       <div className="rounded-xl border bg-card">
@@ -247,19 +252,19 @@ export default function ProductsPage() {
               <TableHead>Supplier</TableHead>
               <TableHead>Harga jual</TableHead>
               <TableHead>Stok</TableHead>
-              <TableHead className="w-28 text-right">Aksi</TableHead>
+              {canManageProducts && <TableHead className="w-28 text-right">Aksi</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading && products.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                <TableCell colSpan={tableColumnCount} className="h-24 text-center text-muted-foreground">
                   Memuat produk...
                 </TableCell>
               </TableRow>
             ) : filteredProducts.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                <TableCell colSpan={tableColumnCount} className="h-24 text-center text-muted-foreground">
                   Belum ada produk yang cocok.
                 </TableCell>
               </TableRow>
@@ -281,26 +286,28 @@ export default function ProductsPage() {
                         {product.stock}
                       </Badge>
                     </TableCell>
-                    <TableCell>
-                      <div className="flex justify-end gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          title="Edit produk"
-                          onClick={() => openEditForm(product)}
-                        >
-                          <PencilIcon />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          title="Hapus produk"
-                          onClick={() => setDeleteTarget(product)}
-                        >
-                          <Trash2Icon />
-                        </Button>
-                      </div>
-                    </TableCell>
+                    {canManageProducts && (
+                      <TableCell>
+                        <div className="flex justify-end gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            title="Edit produk"
+                            onClick={() => openEditForm(product)}
+                          >
+                            <PencilIcon />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            title="Hapus produk"
+                            onClick={() => setDeleteTarget(product)}
+                          >
+                            <Trash2Icon />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    )}
                   </TableRow>
                 )
               })
@@ -309,144 +316,148 @@ export default function ProductsPage() {
         </Table>
       </div>
 
-      <Dialog open={formOpen} onOpenChange={setFormOpen}>
-        <DialogContent className="sm:max-w-2xl">
-          <form onSubmit={handleSubmit}>
-            <DialogHeader>
-              <DialogTitle>
-                {editingProduct ? "Edit produk" : "Tambah produk"}
-              </DialogTitle>
-              <DialogDescription>
-                Lengkapi informasi produk dan stok awal.
-              </DialogDescription>
-            </DialogHeader>
+      {canManageProducts && (
+        <>
+          <Dialog open={formOpen} onOpenChange={setFormOpen}>
+            <DialogContent className="sm:max-w-2xl">
+              <form onSubmit={handleSubmit}>
+                <DialogHeader>
+                  <DialogTitle>
+                    {editingProduct ? "Edit produk" : "Tambah produk"}
+                  </DialogTitle>
+                  <DialogDescription>
+                    Lengkapi informasi produk dan stok awal.
+                  </DialogDescription>
+                </DialogHeader>
 
-            <div className="grid gap-4 py-4 sm:grid-cols-2">
-              <div className="grid gap-2">
-                <Label htmlFor="product-sku">SKU</Label>
-                <Input
-                  id="product-sku"
-                  value={form.sku}
-                  onChange={(event) => setField("sku", event.target.value)}
-                  autoFocus
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="product-name">Nama produk</Label>
-                <Input
-                  id="product-name"
-                  value={form.name}
-                  onChange={(event) => setField("name", event.target.value)}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label>Kategori</Label>
-                <Select
-                  value={form.categoryId}
-                  onValueChange={(value) => setField("categoryId", value)}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Pilih kategori" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((category) => (
-                      <SelectItem key={category.id} value={category.id.toString()}>
-                        {category.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid gap-2">
-                <Label>Supplier</Label>
-                <Select
-                  value={form.supplierId}
-                  onValueChange={(value) => setField("supplierId", value)}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Pilih supplier" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {suppliers.map((supplier) => (
-                      <SelectItem key={supplier.id} value={supplier.id.toString()}>
-                        {supplier.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="purchase-price">Harga beli</Label>
-                <Input
-                  id="purchase-price"
-                  type="number"
-                  min="0"
-                  value={form.purchasePrice}
-                  onChange={(event) => setField("purchasePrice", event.target.value)}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="selling-price">Harga jual</Label>
-                <Input
-                  id="selling-price"
-                  type="number"
-                  min="0"
-                  value={form.sellingPrice}
-                  onChange={(event) => setField("sellingPrice", event.target.value)}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="product-stock">Stok</Label>
-                <Input
-                  id="product-stock"
-                  type="number"
-                  min="0"
-                  step="1"
-                  value={form.stock}
-                  onChange={(event) => setField("stock", event.target.value)}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="minimum-stock">Minimum stok</Label>
-                <Input
-                  id="minimum-stock"
-                  type="number"
-                  min="0"
-                  step="1"
-                  value={form.minimumStock}
-                  onChange={(event) => setField("minimumStock", event.target.value)}
-                />
-              </div>
-              {(formError || error) && (
-                <p className="text-sm text-destructive sm:col-span-2">
-                  {formError || error}
-                </p>
-              )}
-            </div>
+                <div className="grid gap-4 py-4 sm:grid-cols-2">
+                  <div className="grid gap-2">
+                    <Label htmlFor="product-sku">SKU</Label>
+                    <Input
+                      id="product-sku"
+                      value={form.sku}
+                      onChange={(event) => setField("sku", event.target.value)}
+                      autoFocus
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="product-name">Nama produk</Label>
+                    <Input
+                      id="product-name"
+                      value={form.name}
+                      onChange={(event) => setField("name", event.target.value)}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Kategori</Label>
+                    <Select
+                      value={form.categoryId}
+                      onValueChange={(value) => setField("categoryId", value)}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Pilih kategori" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category.id} value={category.id.toString()}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Supplier</Label>
+                    <Select
+                      value={form.supplierId}
+                      onValueChange={(value) => setField("supplierId", value)}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Pilih supplier" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {suppliers.map((supplier) => (
+                          <SelectItem key={supplier.id} value={supplier.id.toString()}>
+                            {supplier.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="purchase-price">Harga beli</Label>
+                    <Input
+                      id="purchase-price"
+                      type="number"
+                      min="0"
+                      value={form.purchasePrice}
+                      onChange={(event) => setField("purchasePrice", event.target.value)}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="selling-price">Harga jual</Label>
+                    <Input
+                      id="selling-price"
+                      type="number"
+                      min="0"
+                      value={form.sellingPrice}
+                      onChange={(event) => setField("sellingPrice", event.target.value)}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="product-stock">Stok</Label>
+                    <Input
+                      id="product-stock"
+                      type="number"
+                      min="0"
+                      step="1"
+                      value={form.stock}
+                      onChange={(event) => setField("stock", event.target.value)}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="minimum-stock">Minimum stok</Label>
+                    <Input
+                      id="minimum-stock"
+                      type="number"
+                      min="0"
+                      step="1"
+                      value={form.minimumStock}
+                      onChange={(event) => setField("minimumStock", event.target.value)}
+                    />
+                  </div>
+                  {(formError || error) && (
+                    <p className="text-sm text-destructive sm:col-span-2">
+                      {formError || error}
+                    </p>
+                  )}
+                </div>
 
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setFormOpen(false)}>
-                Batal
-              </Button>
-              <Button type="submit" disabled={loading}>
-                {loading ? "Menyimpan..." : "Simpan"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={() => setFormOpen(false)}>
+                    Batal
+                  </Button>
+                  <Button type="submit" disabled={loading}>
+                    {loading ? "Menyimpan..." : "Simpan"}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
 
-      <DeleteConfirmDialog
-        open={Boolean(deleteTarget)}
-        itemName={deleteTarget?.name ?? ""}
-        loading={loading}
-        onOpenChange={(open) => {
-          if (!open) {
-            setDeleteTarget(null)
-          }
-        }}
-        onConfirm={handleDelete}
-      />
+          <DeleteConfirmDialog
+            open={Boolean(deleteTarget)}
+            itemName={deleteTarget?.name ?? ""}
+            loading={loading}
+            onOpenChange={(open) => {
+              if (!open) {
+                setDeleteTarget(null)
+              }
+            }}
+            onConfirm={handleDelete}
+          />
+        </>
+      )}
     </ManagementPageLayout>
   )
 }
