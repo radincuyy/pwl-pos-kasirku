@@ -1,175 +1,221 @@
 "use client"
 
-import { useAppDispatch, useAppSelector } from "@/store";
-import { fetchDashboardSummary } from "@/store/dashboardSlice";
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react"
+import { Link } from "react-router-dom"
+import { AlertTriangleIcon, BoxIcon, ReceiptTextIcon, RefreshCwIcon, ShoppingCartIcon, WalletIcon } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useAppDispatch, useAppSelector } from "@/store"
+import { fetchDashboardSummary } from "@/store/dashboardSlice"
 
-function formatCurrency(v: number) {
-  return v.toLocaleString(undefined, { style: "currency", currency: "IDR", maximumFractionDigits: 0 });
+type SummaryCardProps = {
+  title: string
+  value: string
+  description: string
+  icon: ReactNode
+}
+
+function formatCurrency(value: number): string {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0,
+  }).format(value)
+}
+
+function formatDateTime(value: string): string {
+  return new Intl.DateTimeFormat("id-ID", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(value))
+}
+
+function SummaryCard({ title, value, description, icon }: SummaryCardProps) {
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-start justify-between gap-3">
+        <div>
+          <CardDescription>{title}</CardDescription>
+          <CardTitle className="mt-2 text-2xl font-semibold tabular-nums">
+            {value}
+          </CardTitle>
+        </div>
+        <div className="rounded-lg border bg-muted p-2 text-muted-foreground">
+          {icon}
+        </div>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-muted-foreground">{description}</p>
+      </CardContent>
+    </Card>
+  )
 }
 
 export default function DashboardPage() {
-  const dispatch = useAppDispatch();
-  const { summary, loading, error } = useAppSelector((s) => s.dashboard);
+  const dispatch = useAppDispatch()
+  const { summary, loading, error } = useAppSelector((state) => state.dashboard)
 
   useEffect(() => {
-    dispatch(fetchDashboardSummary());
-  }, [dispatch]);
+    dispatch(fetchDashboardSummary())
+  }, [dispatch])
 
-  useEffect(() => {
-    if (error) {
-      // log full error for debugging while showing a friendly message to the user
-      console.error("Dashboard summary error:", error);
-    }
-  }, [error]);
+  if (loading && !summary) {
+    return (
+      <div className="flex flex-col gap-4 p-4 lg:p-6">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="h-32 animate-pulse rounded-xl bg-muted" />
+          <div className="h-32 animate-pulse rounded-xl bg-muted" />
+          <div className="h-32 animate-pulse rounded-xl bg-muted" />
+        </div>
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+          <div className="h-80 animate-pulse rounded-xl bg-muted" />
+          <div className="h-80 animate-pulse rounded-xl bg-muted" />
+        </div>
+      </div>
+    )
+  }
+
+  if (error && !summary) {
+    return (
+      <div className="p-4 lg:p-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-destructive">
+              <AlertTriangleIcon className="size-5" />
+              Terjadi kesalahan
+            </CardTitle>
+            <CardDescription>
+              Ringkasan dashboard gagal dimuat. Coba lagi atau periksa koneksi API.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => dispatch(fetchDashboardSummary())}>
+              <RefreshCwIcon className="size-4" />
+              Coba lagi
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  if (!summary) {
+    return null
+  }
 
   return (
-    <div className="p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-3xl font-bold">Dashboard</h2>
-            <p className="text-sm text-muted-foreground">Ringkasan performa toko Anda</p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <a href="/sales/new" className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-md hover:brightness-105">+ New Sale</a>
-            <button className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm">Export</button>
-          </div>
+    <div className="flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight">Dashboard</h2>
+          <p className="text-sm text-muted-foreground">
+            Ringkasan aktivitas penjualan dan stok toko.
+          </p>
         </div>
+        <Button asChild>
+          <Link to="/sales/new">
+            <ShoppingCartIcon className="size-4" />
+            Transaksi baru
+          </Link>
+        </Button>
+      </div>
 
-        {loading && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="h-28 rounded-lg bg-muted animate-pulse" />
-              <div className="h-28 rounded-lg bg-muted animate-pulse" />
-              <div className="h-28 rounded-lg bg-muted animate-pulse" />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <SummaryCard
+          title="Total produk"
+          value={summary.totalProducts.toString()}
+          description="Produk aktif yang tercatat di sistem."
+          icon={<BoxIcon className="size-5" />}
+        />
+        <SummaryCard
+          title="Total penjualan"
+          value={summary.totalSales.toString()}
+          description="Jumlah transaksi yang sudah tersimpan."
+          icon={<ReceiptTextIcon className="size-5" />}
+        />
+        <SummaryCard
+          title="Pendapatan hari ini"
+          value={formatCurrency(summary.revenueToday)}
+          description="Akumulasi penjualan pada tanggal berjalan."
+          icon={<WalletIcon className="size-5" />}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between gap-3">
+            <div>
+              <CardTitle>Produk stok rendah</CardTitle>
+              <CardDescription>Produk yang perlu segera diperiksa.</CardDescription>
             </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <div className="h-56 rounded-lg bg-muted animate-pulse" />
-              <div className="h-56 rounded-lg bg-muted animate-pulse" />
-            </div>
-          </div>
-        )}
-
-        {error && (
-          <div className="p-4 rounded-lg border border-destructive/20 bg-destructive/5">
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="text-sm font-medium text-destructive">Terjadi kesalahan</div>
-                <div className="text-sm text-destructive/80">Terjadi kesalahan saat memuat data. Silakan coba lagi atau hubungi administrator.</div>
-              </div>
-              <div>
-                <button
-                  onClick={() => dispatch(fetchDashboardSummary())}
-                  className="ml-4 rounded-md bg-destructive/90 px-3 py-1 text-sm text-destructive-foreground"
-                >
-                  Coba lagi
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {summary && (
-          <div className="space-y-6">
-            {/* KPI Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="p-4 rounded-xl bg-gradient-to-r from-white to-gray-50 border shadow-sm flex items-center gap-4">
-                <div className="rounded-full bg-primary/10 p-3">
-                  <svg className="size-6 text-primary" viewBox="0 0 24 24" fill="none"><path d="M3 7h18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </div>
-                <div>
-                  <div className="text-xs text-muted-foreground">Total Produk</div>
-                  <div className="text-2xl font-bold">{summary.totalProducts}</div>
-                  <div className="text-xs text-muted-foreground">Updated just now</div>
-                </div>
-              </div>
-
-              <div className="p-4 rounded-xl bg-gradient-to-r from-white to-gray-50 border shadow-sm flex items-center gap-4">
-                <div className="rounded-full bg-emerald-50 p-3">
-                  <svg className="size-6 text-emerald-500" viewBox="0 0 24 24" fill="none"><path d="M3 12h18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </div>
-                <div>
-                  <div className="text-xs text-muted-foreground">Total Penjualan</div>
-                  <div className="text-2xl font-bold">{summary.totalSales}</div>
-                  <div className="text-xs text-muted-foreground">Last 24 hours</div>
-                </div>
-              </div>
-
-              <div className="p-4 rounded-xl bg-gradient-to-r from-white to-gray-50 border shadow-sm flex items-center gap-4">
-                <div className="rounded-full bg-yellow-50 p-3">
-                  <svg className="size-6 text-yellow-500" viewBox="0 0 24 24" fill="none"><path d="M3 17h18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </div>
-                <div>
-                  <div className="text-xs text-muted-foreground">Pendapatan Hari Ini</div>
-                  <div className="text-2xl font-bold">{formatCurrency(summary.revenueToday)}</div>
-                  <div className="text-xs text-muted-foreground">Compared to yesterday</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Main content */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <section className="p-4 rounded-xl border bg-card shadow-md">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-medium">Produk Stok Rendah</h3>
-                  <a href="/products" className="text-sm text-muted-foreground">Lihat semua</a>
-                </div>
-
-                {summary.lowStockProducts.length === 0 ? (
-                  <div className="text-sm text-muted-foreground">Tidak ada produk stok rendah.</div>
-                ) : (
-                  <ul className="space-y-3">
-                    {summary.lowStockProducts.map((p) => (
-                      <li key={p.id} className="flex items-center justify-between gap-4">
-                        <div>
-                          <div className="font-medium">{p.name} <span className="text-xs text-muted-foreground">({p.sku})</span></div>
-                          <div className="text-xs text-muted-foreground">Kategori: {p.categoryName}</div>
-                        </div>
-
-                        <div className="flex flex-col items-end">
-                          <div className={`px-2 py-1 rounded-full text-xs ${p.stock <= p.minimumStock ? 'bg-destructive/10 text-destructive' : 'bg-emerald-50 text-emerald-600'}`}>
-                            Stok: {p.stock}
-                          </div>
-                          <div className="text-xs text-muted-foreground mt-1">Min: {p.minimumStock}</div>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </section>
-
-              <section className="p-4 rounded-xl border bg-card shadow-md">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-medium">Penjualan Terbaru</h3>
-                  <a href="/sales" className="text-sm text-muted-foreground">Lihat semua</a>
-                </div>
-
-                {summary.recentSales.length === 0 ? (
-                  <div className="text-sm text-muted-foreground">Belum ada penjualan.</div>
-                ) : (
-                  <div className="divide-y">
-                    {summary.recentSales.map((s) => (
-                      <div key={s.id} className="flex items-center justify-between py-3">
-                        <div>
-                          <div className="font-medium">{s.invoiceNumber} — {s.cashierName}</div>
-                          <div className="text-xs text-muted-foreground">{s.customerName ?? "Umum"} • {new Date(s.saleDate).toLocaleString()}</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="font-medium">{formatCurrency(s.totalAmount)}</div>
-                          <div className="text-xs text-muted-foreground">{s.paymentMethod} • {s.status}</div>
-                        </div>
-                      </div>
-                    ))}
+            <Button asChild variant="outline" size="sm">
+              <Link to="/products">Lihat produk</Link>
+            </Button>
+          </CardHeader>
+          <CardContent>
+            {summary.lowStockProducts.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                Tidak ada produk dengan stok rendah.
+              </p>
+            ) : (
+              <div className="divide-y">
+                {summary.lowStockProducts.map((product) => (
+                  <div key={product.id} className="flex items-center justify-between gap-4 py-3">
+                    <div className="min-w-0">
+                      <p className="truncate font-medium">{product.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {product.sku} | {product.categoryName}
+                      </p>
+                    </div>
+                    <Badge variant="destructive">
+                      {product.stock}/{product.minimumStock}
+                    </Badge>
                   </div>
-                )}
-              </section>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between gap-3">
+            <div>
+              <CardTitle>Penjualan terbaru</CardTitle>
+              <CardDescription>Transaksi terakhir yang masuk.</CardDescription>
             </div>
-          </div>
-        )}
+            <Button asChild variant="outline" size="sm">
+              <Link to="/sales">Lihat riwayat</Link>
+            </Button>
+          </CardHeader>
+          <CardContent>
+            {summary.recentSales.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                Belum ada transaksi penjualan.
+              </p>
+            ) : (
+              <div className="divide-y">
+                {summary.recentSales.map((sale) => (
+                  <div key={sale.id} className="flex items-center justify-between gap-4 py-3">
+                    <div className="min-w-0">
+                      <p className="truncate font-medium">{sale.invoiceNumber}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {sale.customerName ?? "Umum"} | {sale.cashierName} | {formatDateTime(sale.saleDate)}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium">{formatCurrency(sale.totalAmount)}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {sale.paymentMethod} | {sale.status}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
-  );
+  )
 }
