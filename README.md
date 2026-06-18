@@ -16,7 +16,7 @@ KasirKu Web membantu operasional toko atau usaha retail melalui pengelolaan prod
 - Backend: NodeJS Express
 - Database: MySQL
 - Caching: Redis
-- Authentication: JWT + bcrypt
+- Authentication: JWT + bcrypt + Role-Based Access Control
 - Version Control: Git + GitHub
 
 ## Arsitektur Singkat
@@ -60,13 +60,14 @@ pwl-pos-kasirku/
 
 ### Fase Saat Ini
 
-Project saat ini berada di **Phase 7: Validasi Transaksi POS dan Riwayat Penjualan**. Antarmuka kasir, checkout transaksi, riwayat penjualan, serta detail invoice sudah diimplementasikan. Pengerjaan berikutnya berfokus pada pengujian alur transaksi menggunakan backend dan database lokal.
+Project saat ini berada di **Phase 8: Pengujian Akhir dan Stabilisasi**. Fitur transaksi POS, riwayat penjualan, serta pembatasan akses berdasarkan role sudah diimplementasikan. Role owner dapat melihat dashboard dan data operasional dalam mode read-only. Pengerjaan berikutnya berfokus pada pengujian end-to-end seluruh alur dan perbaikan temuan.
 
 ### Backend
 
 - [x] Setup backend Express
 - [x] Setup koneksi database MySQL
 - [x] Implementasi authentication (JWT + bcrypt)
+- [x] Implementasi otorisasi berbasis role (admin, kasir, owner)
 - [x] Validasi schema dan seed di MySQL lokal
 - [x] Implementasi CRUD kategori
 - [x] Implementasi CRUD supplier
@@ -85,6 +86,7 @@ Project saat ini berada di **Phase 7: Validasi Transaksi POS dan Riwayat Penjual
 - [x] Implementasi API service modules (7 modul)
 - [x] Implementasi Redux store dan slices
 - [x] Implementasi layout dan routing
+- [x] Implementasi route, menu, dan mode read-only berbasis role
 - [x] Implementasi halaman login
 - [x] Implementasi halaman dashboard
 - [x] Integrasi awal frontend-backend (login + dashboard)
@@ -110,7 +112,7 @@ Project saat ini berada di **Phase 7: Validasi Transaksi POS dan Riwayat Penjual
 
 ### Status Validasi
 
-- Backend: `npm test` berhasil dengan 7 file test dan 23 test passed.
+- Backend: `npm test` berhasil dengan 8 file test dan 30 test passed.
 - Frontend: `npm run build` dan `npm run lint` berhasil. Halaman login, dashboard, CRUD data, transaksi POS, riwayat penjualan, dan detail invoice sudah tersedia.
 
 ## Branch Workflow
@@ -140,6 +142,7 @@ Project saat ini berada di **Phase 7: Validasi Transaksi POS dan Riwayat Penjual
 | `feature/dashboard-page` | Merged |
 | `feature/crud-pages` | Implemented |
 | `feature/sales-pages` | In Progress |
+| `feature/rbac` | In Progress |
 
 ## Cara Menjalankan
 
