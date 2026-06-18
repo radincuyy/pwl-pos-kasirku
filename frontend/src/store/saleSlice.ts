@@ -15,7 +15,6 @@ interface SaleState {
   currentSale: SaleDetail | null;
   loading: boolean;
   error: string | null;
-  // POS Cart state
   cart: CartItem[];
   selectedCustomerId: number | null;
   paymentMethod: "cash" | "transfer" | "qris" | "debit";
@@ -91,13 +90,11 @@ const saleSlice = createSlice({
     clearCurrentSale: (state) => {
       state.currentSale = null;
     },
-    // Cart management
     addToCart: (state, action: PayloadAction<Product>) => {
       const product = action.payload;
       const existingItem = state.cart.find((item) => item.product.id === product.id);
       
       if (existingItem) {
-        // Only increment if we have enough stock
         if (existingItem.quantity < product.stock) {
           existingItem.quantity += 1;
         }
@@ -179,9 +176,8 @@ const saleSlice = createSlice({
       })
       .addCase(createSale.fulfilled, (state, action) => {
         state.loading = false;
-        state.sales.unshift(action.payload); // prepend to list
+        state.sales.unshift(action.payload);
         state.currentSale = action.payload;
-        // Reset cart upon successful checkout
         state.cart = [];
         state.selectedCustomerId = null;
         state.paymentMethod = "cash";
