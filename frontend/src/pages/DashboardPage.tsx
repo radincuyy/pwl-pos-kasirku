@@ -3,9 +3,9 @@
 import { useEffect, type ReactNode } from "react"
 import { Link } from "react-router-dom"
 import { AlertTriangleIcon, BoxIcon, ReceiptTextIcon, RefreshCwIcon, ShoppingCartIcon, WalletIcon } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/atoms/ui/badge"
+import { Button } from "@/components/atoms/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/atoms/ui/card"
 import { useAppDispatch, useAppSelector } from "@/store"
 import { fetchDashboardSummary } from "@/store/dashboardSlice"
 

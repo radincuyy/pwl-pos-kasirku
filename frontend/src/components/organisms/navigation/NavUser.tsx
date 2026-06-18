@@ -2,7 +2,7 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/avatar"
+} from "@/components/atoms/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,13 +10,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/atoms/ui/dropdown-menu"
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/atoms/ui/sidebar"
 import { EllipsisVerticalIcon, LogOutIcon } from "lucide-react"
 
 export function NavUser({
@@ -25,7 +25,7 @@ export function NavUser({
   user,
 }: {
   loggingOut: boolean
-  onLogout: () => void
+  onLogout: () => Promise<void>
   user: {
     name: string
     email: string

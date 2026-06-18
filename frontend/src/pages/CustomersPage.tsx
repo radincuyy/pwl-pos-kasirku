@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import type { CustomerPayload } from "@/api/customerService"
-import { ContactMasterPage } from "@/components/master/ContactMasterPage"
+import { ContactManagementTemplate } from "@/components/templates/ContactManagementTemplate"
 import { useAppDispatch, useAppSelector } from "@/store"
 import {
   clearCustomerError,
@@ -19,7 +19,7 @@ export default function CustomersPage() {
   }, [dispatch])
 
   return (
-    <ContactMasterPage
+    <ContactManagementTemplate
       title="Pelanggan"
       description="Simpan identitas pelanggan untuk transaksi yang lebih cepat."
       singularLabel="Pelanggan"

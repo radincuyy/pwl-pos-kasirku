@@ -1,16 +1,20 @@
 import { useState, type ComponentProps, type FormEvent } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/atoms/ui/button"
+import { Card, CardContent } from "@/components/atoms/ui/card"
 import {
   Field,
   FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "@/components/atoms/ui/field"
+import { Input } from "@/components/atoms/ui/input"
 import { cn } from "@/lib/utils"
-import type { LoginPayload } from "@/api/authService"
+
+export type LoginCredentials = {
+  email: string
+  password: string
+}
 
 type FormErrors = {
   email?: string
@@ -21,7 +25,7 @@ type LoginFormProps = ComponentProps<"div"> & {
   loading: boolean
   serverError: string | null
   onClearError: () => void
-  onLogin: (payload: LoginPayload) => void
+  onLogin: (payload: LoginCredentials) => void
 }
 
 function validateLoginForm(email: string, password: string): FormErrors {

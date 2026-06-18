@@ -9,7 +9,7 @@ import {
   AlertDialogHeader,
   AlertDialogMedia,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+} from "@/components/atoms/ui/alert-dialog"
 
 type DeleteConfirmDialogProps = {
   open: boolean

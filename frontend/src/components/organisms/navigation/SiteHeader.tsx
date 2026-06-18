@@ -1,21 +1,7 @@
-import { useLocation } from "react-router-dom"
-import { Separator } from "@/components/ui/separator"
-import { SidebarTrigger } from "@/components/ui/sidebar"
+import { Separator } from "@/components/atoms/ui/separator"
+import { SidebarTrigger } from "@/components/atoms/ui/sidebar"
 
-const routeTitles: Record<string, string> = {
-  "/": "Dashboard",
-  "/products": "Produk",
-  "/categories": "Kategori",
-  "/suppliers": "Supplier",
-  "/customers": "Pelanggan",
-  "/sales": "Riwayat Penjualan",
-  "/sales/new": "Transaksi Baru",
-}
-
-export function SiteHeader() {
-  const location = useLocation()
-  const title = routeTitles[location.pathname] ?? "KasirKu"
-
+export function SiteHeader({ title }: { title: string }) {
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
       <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">

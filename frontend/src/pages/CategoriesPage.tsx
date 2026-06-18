@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react"
 import { PencilIcon, Trash2Icon } from "lucide-react"
 import type { Category, CategoryPayload } from "@/api/categoryService"
-import { DeleteConfirmDialog } from "@/components/master/DeleteConfirmDialog"
-import { MasterPageLayout } from "@/components/master/MasterPageLayout"
-import { Button } from "@/components/ui/button"
+import { DeleteConfirmDialog } from "@/components/molecules/DeleteConfirmDialog"
+import { ManagementPageLayout } from "@/components/templates/ManagementPageLayout"
+import { Button } from "@/components/atoms/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -11,9 +11,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/atoms/ui/dialog"
+import { Input } from "@/components/atoms/ui/input"
+import { Label } from "@/components/atoms/ui/label"
 import {
   Table,
   TableBody,
@@ -21,7 +21,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/atoms/ui/table"
 import { useAppDispatch, useAppSelector } from "@/store"
 import {
   clearCategoryError,
@@ -128,7 +128,7 @@ export default function CategoriesPage() {
   }
 
   return (
-    <MasterPageLayout
+    <ManagementPageLayout
       title="Kategori"
       description="Kelompokkan produk agar mudah dicari dan dikelola."
       addLabel="Tambah kategori"
@@ -263,6 +263,6 @@ export default function CategoriesPage() {
         }}
         onConfirm={handleDelete}
       />
-    </MasterPageLayout>
+    </ManagementPageLayout>
   )
 }

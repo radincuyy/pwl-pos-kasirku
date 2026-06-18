@@ -1,8 +1,8 @@
 import { useMemo, useState, type FormEvent } from "react"
 import { PencilIcon, Trash2Icon } from "lucide-react"
-import { DeleteConfirmDialog } from "@/components/master/DeleteConfirmDialog"
-import { MasterPageLayout } from "@/components/master/MasterPageLayout"
-import { Button } from "@/components/ui/button"
+import { DeleteConfirmDialog } from "@/components/molecules/DeleteConfirmDialog"
+import { ManagementPageLayout } from "@/components/templates/ManagementPageLayout"
+import { Button } from "@/components/atoms/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -10,9 +10,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/atoms/ui/dialog"
+import { Input } from "@/components/atoms/ui/input"
+import { Label } from "@/components/atoms/ui/label"
 import {
   Table,
   TableBody,
@@ -20,7 +20,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/atoms/ui/table"
 
 export type ContactRecord = {
   id: number
@@ -35,7 +35,7 @@ export type ContactPayload = {
   address?: string | null
 }
 
-type ContactMasterPageProps = {
+type ContactManagementTemplateProps = {
   title: string
   description: string
   singularLabel: string
@@ -54,7 +54,7 @@ const emptyForm: ContactPayload = {
   address: "",
 }
 
-export function ContactMasterPage({
+export function ContactManagementTemplate({
   title,
   description,
   singularLabel,
@@ -65,7 +65,7 @@ export function ContactMasterPage({
   onCreate,
   onUpdate,
   onDelete,
-}: ContactMasterPageProps) {
+}: ContactManagementTemplateProps) {
   const [search, setSearch] = useState("")
   const [form, setForm] = useState<ContactPayload>(emptyForm)
   const [editingRecord, setEditingRecord] = useState<ContactRecord | null>(null)
@@ -153,7 +153,7 @@ export function ContactMasterPage({
   }
 
   return (
-    <MasterPageLayout
+    <ManagementPageLayout
       title={title}
       description={description}
       addLabel={`Tambah ${singularLabel.toLowerCase()}`}
@@ -297,6 +297,6 @@ export function ContactMasterPage({
         }}
         onConfirm={handleDelete}
       />
-    </MasterPageLayout>
+    </ManagementPageLayout>
   )
 }

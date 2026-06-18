@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react"
 import { PencilIcon, Trash2Icon } from "lucide-react"
 import type { Product, ProductPayload } from "@/api/productService"
-import { DeleteConfirmDialog } from "@/components/master/DeleteConfirmDialog"
-import { MasterPageLayout } from "@/components/master/MasterPageLayout"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { DeleteConfirmDialog } from "@/components/molecules/DeleteConfirmDialog"
+import { ManagementPageLayout } from "@/components/templates/ManagementPageLayout"
+import { Badge } from "@/components/atoms/ui/badge"
+import { Button } from "@/components/atoms/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -12,16 +12,16 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/atoms/ui/dialog"
+import { Input } from "@/components/atoms/ui/input"
+import { Label } from "@/components/atoms/ui/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/atoms/ui/select"
 import {
   Table,
   TableBody,
@@ -29,7 +29,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/atoms/ui/table"
 import { useAppDispatch, useAppSelector } from "@/store"
 import { fetchCategories } from "@/store/categorySlice"
 import {
@@ -227,7 +227,7 @@ export default function ProductsPage() {
   }
 
   return (
-    <MasterPageLayout
+    <ManagementPageLayout
       title="Produk"
       description="Kelola identitas produk, harga, supplier, dan stok."
       addLabel="Tambah produk"
@@ -447,6 +447,6 @@ export default function ProductsPage() {
         }}
         onConfirm={handleDelete}
       />
-    </MasterPageLayout>
+    </ManagementPageLayout>
   )
 }

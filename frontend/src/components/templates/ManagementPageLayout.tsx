@@ -1,9 +1,9 @@
 import type { ReactNode } from "react"
 import { PlusIcon, SearchIcon } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Button } from "@/components/atoms/ui/button"
+import { Input } from "@/components/atoms/ui/input"
 
-type MasterPageLayoutProps = {
+type ManagementPageLayoutProps = {
   title: string
   description: string
   addLabel: string
@@ -16,7 +16,7 @@ type MasterPageLayoutProps = {
   onSearchChange: (value: string) => void
 }
 
-export function MasterPageLayout({
+export function ManagementPageLayout({
   title,
   description,
   addLabel,
@@ -27,7 +27,7 @@ export function MasterPageLayout({
   children,
   onAdd,
   onSearchChange,
-}: MasterPageLayoutProps) {
+}: ManagementPageLayoutProps) {
   return (
     <div className="flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

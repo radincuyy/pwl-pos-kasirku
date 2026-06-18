@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import type { SupplierPayload } from "@/api/supplierService"
-import { ContactMasterPage } from "@/components/master/ContactMasterPage"
+import { ContactManagementTemplate } from "@/components/templates/ContactManagementTemplate"
 import { useAppDispatch, useAppSelector } from "@/store"
 import {
   clearSupplierError,
@@ -19,7 +19,7 @@ export default function SuppliersPage() {
   }, [dispatch])
 
   return (
-    <ContactMasterPage
+    <ContactManagementTemplate
       title="Supplier"
       description="Kelola pemasok produk dan informasi kontaknya."
       singularLabel="Supplier"

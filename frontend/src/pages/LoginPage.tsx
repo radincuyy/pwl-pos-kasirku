@@ -1,9 +1,11 @@
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { LoginForm } from "@/components/ui/login-form"
+import {
+  LoginForm,
+  type LoginCredentials,
+} from "@/components/organisms/auth/LoginForm"
 import { useAppDispatch, useAppSelector } from "@/store"
 import { clearError, loginUser } from "@/store/authSlice"
-import type { LoginPayload } from "@/api/authService"
 
 export default function LoginPage() {
   const dispatch = useAppDispatch()
@@ -22,7 +24,7 @@ export default function LoginPage() {
     }
   }, [dispatch])
 
-  const handleLogin = (payload: LoginPayload) => {
+  const handleLogin = (payload: LoginCredentials) => {
     dispatch(loginUser(payload))
   }
 

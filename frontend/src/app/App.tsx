@@ -1,7 +1,7 @@
 import { lazy, Suspense } from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
-import DashboardLayout from "@/components/layout/DashboardLayout"
-import ProtectedRoute from "@/components/layout/ProtectedRoute"
+import DashboardRouteLayout from "@/app/DashboardRouteLayout"
+import ProtectedRoute from "@/app/ProtectedRoute"
 
 const CategoriesPage = lazy(() => import("@/pages/CategoriesPage"))
 const CustomersPage = lazy(() => import("@/pages/CustomersPage"))
@@ -32,7 +32,7 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
 
         <Route element={<ProtectedRoute />}>
-          <Route element={<DashboardLayout />}>
+          <Route element={<DashboardRouteLayout />}>
             <Route index element={<DashboardPage />} />
             <Route path="products" element={<ProductsPage />} />
             <Route path="categories" element={<CategoriesPage />} />

@@ -33,8 +33,13 @@ React Frontend -> Axios -> Express REST API -> MySQL
 pwl-pos-kasirku/
 |-- frontend/          # React + Vite + TypeScript
 |   |-- src/
+|   |   |-- app/       # Root aplikasi dan route guard
 |   |   |-- api/       # Axios instance + service modules
-|   |   |-- components/# shadcn/ui components
+|   |   |-- components/# Atomic Design components
+|   |   |   |-- atoms/      # Primitive shadcn/ui
+|   |   |   |-- molecules/  # Komponen interaksi kecil
+|   |   |   |-- organisms/  # Form, navigasi, dan bagian fitur
+|   |   |   `-- templates/  # Layout halaman
 |   |   |-- hooks/     # Custom hooks
 |   |   |-- lib/       # Utility functions
 |   |   |-- pages/     # Halaman aplikasi
