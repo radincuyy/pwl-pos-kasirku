@@ -6,17 +6,18 @@ import {
 } from "@/components/organisms/auth/LoginForm"
 import { useAppDispatch, useAppSelector } from "@/store"
 import { clearError, loginUser } from "@/store/authSlice"
+import { getDefaultRoute } from "@/lib/access-control"
 
 export default function LoginPage() {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const { token, loading, error } = useAppSelector((state) => state.auth)
+  const { token, user, loading, error } = useAppSelector((state) => state.auth)
 
   useEffect(() => {
-    if (token) {
-      navigate("/", { replace: true })
+    if (token && user) {
+      navigate(getDefaultRoute(user.role), { replace: true })
     }
-  }, [token, navigate])
+  }, [token, user, navigate])
 
   useEffect(() => {
     return () => {

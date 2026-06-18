@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { authService } from "../api/authService";
 import { getApiErrorMessage } from "../api/error";
 import type { LoginPayload, User } from "../api/authService";
+import { isUserRole } from "@/lib/access-control";
 
 interface AuthState {
   user: User | null;
@@ -10,13 +11,35 @@ interface AuthState {
   error: string | null;
 }
 
+function isStoredUser(value: unknown): value is User {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const user = value as Record<string, unknown>;
+
+  return (
+    typeof user.id === "number" &&
+    typeof user.name === "string" &&
+    typeof user.email === "string" &&
+    isUserRole(user.role)
+  );
+}
+
 const getInitialUser = (): User | null => {
   try {
     const userStr = localStorage.getItem("user");
-    return userStr ? JSON.parse(userStr) : null;
+    const storedUser: unknown = userStr ? JSON.parse(userStr) : null;
+
+    if (isStoredUser(storedUser)) {
+      return storedUser;
+    }
   } catch {
-    return null;
+    localStorage.removeItem("user");
   }
+
+  localStorage.removeItem("token");
+  return null;
 };
 
 const initialState: AuthState = {

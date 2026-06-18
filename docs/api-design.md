@@ -20,6 +20,24 @@ http://localhost:5001/api
 | POST | `/auth/logout` | Logout user | Yes |
 | GET | `/auth/me` | Mengambil data user login | Yes |
 
+## Role Access
+
+| Endpoint | Admin | Kasir | Owner |
+|---|---|---|---|
+| `/dashboard/*` | Read | - | Read |
+| `GET /categories/*` | Read | - | Read |
+| `POST/PUT/DELETE /categories/*` | Write | - | - |
+| `GET /suppliers/*` | Read | - | Read |
+| `POST/PUT/DELETE /suppliers/*` | Write | - | - |
+| `GET /products/*` | Read | Read | Read |
+| `POST/PUT/DELETE /products/*` | Write | - | - |
+| `GET /customers/*` | Read | Read | Read |
+| `POST/PUT/DELETE /customers/*` | Write | Write | - |
+| `GET /sales/*` | Read | Read | Read |
+| `POST /sales` | Create | Create | - |
+
+Endpoint protected mengembalikan `401` jika token tidak valid dan `403` jika role tidak memiliki izin.
+
 ## Dashboard
 
 | Method | Endpoint | Deskripsi | Auth | Cache |

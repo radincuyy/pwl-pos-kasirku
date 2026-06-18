@@ -8,16 +8,17 @@ const {
   deleteCustomer
 } = require('../controllers/customerController');
 const authMiddleware = require('../middlewares/authMiddleware');
+const authorizeRoles = require('../middlewares/authorizeRoles');
 const asyncHandler = require('../utils/asyncHandler');
 
 const router = express.Router();
 
 router.use(authMiddleware);
 
-router.get('/', asyncHandler(getCustomers));
-router.get('/:id', asyncHandler(getCustomerById));
-router.post('/', asyncHandler(createCustomer));
-router.put('/:id', asyncHandler(updateCustomer));
-router.delete('/:id', asyncHandler(deleteCustomer));
+router.get('/', authorizeRoles('admin', 'kasir', 'owner'), asyncHandler(getCustomers));
+router.get('/:id', authorizeRoles('admin', 'kasir', 'owner'), asyncHandler(getCustomerById));
+router.post('/', authorizeRoles('admin', 'kasir'), asyncHandler(createCustomer));
+router.put('/:id', authorizeRoles('admin', 'kasir'), asyncHandler(updateCustomer));
+router.delete('/:id', authorizeRoles('admin', 'kasir'), asyncHandler(deleteCustomer));
 
 module.exports = router;
