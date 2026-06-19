@@ -12,6 +12,7 @@ import { TooltipProvider } from "@/components/atoms/ui/tooltip"
 
 type DashboardLayoutProps = {
   children: ReactNode
+  homeUrl: string
   title: string
   navigationItems: SidebarNavigationItem[]
   loggingOut: boolean
@@ -21,6 +22,7 @@ type DashboardLayoutProps = {
 
 export default function DashboardLayout({
   children,
+  homeUrl,
   title,
   navigationItems,
   loggingOut,
@@ -40,6 +42,7 @@ export default function DashboardLayout({
       <TooltipProvider>
         <AppSidebar
           variant="inset"
+          homeUrl={homeUrl}
           items={navigationItems}
           loggingOut={loggingOut}
           onLogout={onLogout}

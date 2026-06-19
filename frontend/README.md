@@ -67,6 +67,10 @@ Buat file `.env` di folder frontend:
 VITE_API_URL=http://localhost:5001/api
 ```
 
+Untuk deployment terpisah, isi `VITE_API_URL` dengan URL HTTPS backend sebelum
+menjalankan build. Konfigurasi fallback SPA untuk Vercel dan Netlify/Cloudflare
+Pages sudah tersedia di repository.
+
 ## Scripts
 
 ```bash

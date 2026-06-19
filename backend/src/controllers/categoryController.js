@@ -1,6 +1,6 @@
 const { pool } = require('../config/database');
 const createHttpError = require('../utils/createHttpError');
-const { clearProductsCache } = require('../utils/cache');
+const { clearProductDataCache } = require('../utils/cache');
 
 function toCategoryResponse(category) {
   return {
@@ -99,14 +99,13 @@ async function updateCategory(req, res) {
     throw createHttpError(404, 'Kategori tidak ditemukan');
   }
 
-  await clearProductsCache();
-
   await pool.execute(
     `UPDATE categories
      SET name = ?, description = ?
      WHERE id = ?`,
     [payload.name, payload.description, req.params.id]
   );
+  await clearProductDataCache();
 
   const category = await findCategoryById(req.params.id);
 
@@ -126,8 +125,6 @@ async function deleteCategory(req, res) {
     throw createHttpError(404, 'Kategori tidak ditemukan');
   }
 
-  await clearProductsCache();
-
   try {
     await pool.execute('DELETE FROM categories WHERE id = ?', [req.params.id]);
   } catch (error) {
@@ -137,6 +134,7 @@ async function deleteCategory(req, res) {
 
     throw error;
   }
+  await clearProductDataCache();
 
   return res.status(200).json({
     success: true,

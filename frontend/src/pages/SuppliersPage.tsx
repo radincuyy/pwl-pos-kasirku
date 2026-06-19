@@ -13,6 +13,8 @@ import {
 export default function SuppliersPage() {
   const dispatch = useAppDispatch()
   const { suppliers, loading, error } = useAppSelector((state) => state.suppliers)
+  const role = useAppSelector((state) => state.auth.user?.role)
+  const canManageSuppliers = role === "admin"
 
   useEffect(() => {
     dispatch(fetchSuppliers())
@@ -23,6 +25,7 @@ export default function SuppliersPage() {
       title="Supplier"
       description="Kelola pemasok produk dan informasi kontaknya."
       singularLabel="Supplier"
+      canManage={canManageSuppliers}
       records={suppliers}
       loading={loading}
       error={error}

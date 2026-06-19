@@ -1,9 +1,13 @@
+import { PrinterIcon } from "lucide-react"
+
 import type { SaleDetail } from "@/api/saleService"
 import { Badge } from "@/components/atoms/ui/badge"
+import { Button } from "@/components/atoms/ui/button"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/atoms/ui/dialog"
@@ -16,11 +20,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/atoms/ui/table"
+import { PrintableReceipt } from "@/components/molecules/sales/PrintableReceipt"
 import {
   formatCurrency,
   formatDateTime,
   formatPaymentMethod,
 } from "@/lib/format"
+import { printReceipt } from "@/lib/printReceipt"
 
 type SaleDetailDialogProps = {
   open: boolean
@@ -123,7 +129,16 @@ export function SaleDetailDialog({
             </div>
           </div>
         ) : null}
+
+        <DialogFooter>
+          <Button variant="outline" onClick={printReceipt} disabled={!sale}>
+            <PrinterIcon />
+            Cetak struk
+          </Button>
+        </DialogFooter>
       </DialogContent>
+
+      {sale && <PrintableReceipt sale={sale} />}
     </Dialog>
   )
 }

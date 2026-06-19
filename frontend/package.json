@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -23,6 +26,7 @@
     "react-hot-toast": "^2.6.0",
     "react-redux": "^9.3.0",
     "react-router-dom": "^7.17.0",
+    "recharts": "^3.8.0",
     "shadcn": "^4.11.0",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.1",

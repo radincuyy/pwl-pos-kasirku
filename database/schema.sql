@@ -1,8 +1,5 @@
--- Initial database schema draft for KasirKu Web
--- Database: pwl_pos
-
-CREATE DATABASE IF NOT EXISTS pwl_pos;
-USE pwl_pos;
+-- KasirKu Web database schema
+-- Run this file against an existing, selected MySQL database.
 
 CREATE TABLE roles (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -45,6 +42,7 @@ CREATE TABLE products (
   supplier_id BIGINT UNSIGNED NOT NULL,
   sku VARCHAR(50) NOT NULL UNIQUE,
   name VARCHAR(150) NOT NULL,
+  image_url VARCHAR(2048) NULL,
   purchase_price DECIMAL(12,2) NOT NULL DEFAULT 0,
   selling_price DECIMAL(12,2) NOT NULL DEFAULT 0,
   stock INT NOT NULL DEFAULT 0,

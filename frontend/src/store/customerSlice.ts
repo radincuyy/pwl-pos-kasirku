@@ -113,7 +113,6 @@ const customerSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // fetchAll
       .addCase(fetchCustomers.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -126,7 +125,6 @@ const customerSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      // fetchById
       .addCase(fetchCustomerById.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -139,7 +137,6 @@ const customerSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      // create
       .addCase(createCustomer.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -152,14 +149,13 @@ const customerSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      // update
       .addCase(updateCustomer.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(updateCustomer.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.customers.findIndex((c) => c.id === action.payload.id);
+        const index = state.customers.findIndex((customer) => customer.id === action.payload.id);
         if (index !== -1) {
           state.customers[index] = action.payload;
         }
@@ -171,14 +167,13 @@ const customerSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      // delete
       .addCase(deleteCustomer.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(deleteCustomer.fulfilled, (state, action) => {
         state.loading = false;
-        state.customers = state.customers.filter((c) => c.id !== action.payload);
+        state.customers = state.customers.filter((customer) => customer.id !== action.payload);
       })
       .addCase(deleteCustomer.rejected, (state, action) => {
         state.loading = false;

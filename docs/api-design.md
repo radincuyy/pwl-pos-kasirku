@@ -20,11 +20,31 @@ http://localhost:5001/api
 | POST | `/auth/logout` | Logout user | Yes |
 | GET | `/auth/me` | Mengambil data user login | Yes |
 
+## Role Access
+
+| Endpoint | Admin | Kasir | Owner |
+|---|---|---|---|
+| `/dashboard/summary` | Read | - | Read |
+| `/dashboard/cashier-summary` | - | Read own | - |
+| `GET /categories/*` | Read | - | Read |
+| `POST/PUT/DELETE /categories/*` | Write | - | - |
+| `GET /suppliers/*` | Read | - | Read |
+| `POST/PUT/DELETE /suppliers/*` | Write | - | - |
+| `GET /products/*` | Read | Read | Read |
+| `POST/PUT/DELETE /products/*` | Write | - | - |
+| `GET /customers/*` | Read | Read | Read |
+| `POST/PUT/DELETE /customers/*` | Write | Write | - |
+| `GET /sales/*` | Read | Read | Read |
+| `POST /sales` | Create | Create | - |
+
+Endpoint protected mengembalikan `401` jika token tidak valid dan `403` jika role tidak memiliki izin.
+
 ## Dashboard
 
 | Method | Endpoint | Deskripsi | Auth | Cache |
 |---|---|---|---|---|
 | GET | `/dashboard/summary` | Ringkasan total produk, transaksi, pendapatan, stok rendah | Yes | Redis |
+| GET | `/dashboard/cashier-summary` | Ringkasan transaksi hari ini dan transaksi terakhir milik kasir login | Yes | - |
 
 ## Products
 
@@ -74,4 +94,4 @@ http://localhost:5001/api
 | POST | `/sales` | Membuat transaksi penjualan | Yes |
 | GET | `/sales/:id` | Detail transaksi | Yes |
 
-Total endpoint awal: 28 endpoint.
+Total endpoint: 29 endpoint.

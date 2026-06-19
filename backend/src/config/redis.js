@@ -1,12 +1,14 @@
 const { createClient } = require('redis');
 
+const { environment } = require('./environment');
+
 const redisConfig = {
-  url: process.env.REDIS_URL || '',
-  host: process.env.REDIS_HOST || 'localhost',
-  port: Number(process.env.REDIS_PORT || 6379),
-  username: process.env.REDIS_USERNAME || undefined,
-  password: process.env.REDIS_PASSWORD || undefined,
-  ttlSeconds: Number(process.env.REDIS_TTL_SECONDS || 300)
+  url: environment.redis.url,
+  host: environment.redis.host,
+  port: environment.redis.port,
+  username: environment.redis.username || undefined,
+  password: environment.redis.password || undefined,
+  ttlSeconds: environment.redis.ttlSeconds
 };
 
 let redisClient = null;

@@ -14,44 +14,59 @@ import DashboardLayout from "@/components/templates/DashboardLayout"
 import type { SidebarNavigationItem } from "@/components/organisms/navigation/AppSidebar"
 import { useAppDispatch, useAppSelector } from "@/store"
 import { logoutUser } from "@/store/authSlice"
+import {
+  getDefaultRoute,
+  hasAllowedRole,
+  roleLabels,
+  type UserRole,
+} from "@/lib/access-control"
 
-type SidebarNavigationDefinition = Omit<SidebarNavigationItem, "isActive">
+type SidebarNavigationDefinition = Omit<SidebarNavigationItem, "isActive"> & {
+  allowedRoles: readonly UserRole[]
+}
 
 const navigationDefinitions: SidebarNavigationDefinition[] = [
   {
     title: "Dashboard",
     url: "/",
     icon: <LayoutDashboardIcon />,
+    allowedRoles: ["admin", "kasir", "owner"],
   },
   {
     title: "Produk",
     url: "/products",
     icon: <BoxIcon />,
+    allowedRoles: ["admin", "owner"],
   },
   {
     title: "Kategori",
     url: "/categories",
     icon: <TagsIcon />,
+    allowedRoles: ["admin", "owner"],
   },
   {
     title: "Supplier",
     url: "/suppliers",
     icon: <TruckIcon />,
+    allowedRoles: ["admin", "owner"],
   },
   {
     title: "Pelanggan",
     url: "/customers",
     icon: <UsersIcon />,
+    allowedRoles: ["admin", "kasir", "owner"],
   },
   {
     title: "Transaksi Baru",
     url: "/sales/new",
     icon: <ShoppingCartIcon />,
+    allowedRoles: ["admin", "kasir"],
   },
   {
     title: "Riwayat Penjualan",
     url: "/sales",
     icon: <ReceiptTextIcon />,
+    allowedRoles: ["admin", "kasir", "owner"],
   },
 ]
 
@@ -69,8 +84,14 @@ function getRouteTitle(pathname: string): string {
   return routeTitles[pathname] ?? "KasirKu"
 }
 
-function getNavigationItems(pathname: string): SidebarNavigationItem[] {
-  const activeUrl = navigationDefinitions
+function getNavigationItems(
+  pathname: string,
+  role: UserRole
+): SidebarNavigationItem[] {
+  const allowedItems = navigationDefinitions.filter((item) =>
+    hasAllowedRole(role, item.allowedRoles)
+  )
+  const activeUrl = allowedItems
     .filter(
       (item) =>
         pathname === item.url ||
@@ -78,8 +99,10 @@ function getNavigationItems(pathname: string): SidebarNavigationItem[] {
     )
     .sort((firstItem, secondItem) => secondItem.url.length - firstItem.url.length)[0]?.url
 
-  return navigationDefinitions.map((item) => ({
-    ...item,
+  return allowedItems.map((item) => ({
+    title: item.title,
+    url: item.url,
+    icon: item.icon,
     isActive: item.url === activeUrl,
   }))
 }
@@ -102,15 +125,21 @@ export default function DashboardRouteLayout() {
     }
   }
 
+  if (!user) {
+    return null
+  }
+
   return (
     <DashboardLayout
       title={getRouteTitle(location.pathname)}
-      navigationItems={getNavigationItems(location.pathname)}
+      homeUrl={getDefaultRoute(user.role)}
+      navigationItems={getNavigationItems(location.pathname, user.role)}
       loggingOut={loggingOut}
       onLogout={handleLogout}
       user={{
-        name: user?.name ?? "Pengguna",
-        email: user?.email ?? "user@kasirku.test",
+        name: user.name,
+        email: user.email,
+        roleLabel: roleLabels[user.role],
         avatar: "",
       }}
     >

@@ -100,14 +100,13 @@ async function updateSupplier(req, res) {
     throw createHttpError(404, 'Supplier tidak ditemukan');
   }
 
-  await clearProductsCache();
-
   await pool.execute(
     `UPDATE suppliers
      SET name = ?, phone = ?, address = ?
      WHERE id = ?`,
     [payload.name, payload.phone, payload.address, req.params.id]
   );
+  await clearProductsCache();
 
   const supplier = await findSupplierById(req.params.id);
 
@@ -127,8 +126,6 @@ async function deleteSupplier(req, res) {
     throw createHttpError(404, 'Supplier tidak ditemukan');
   }
 
-  await clearProductsCache();
-
   try {
     await pool.execute('DELETE FROM suppliers WHERE id = ?', [req.params.id]);
   } catch (error) {
@@ -138,6 +135,7 @@ async function deleteSupplier(req, res) {
 
     throw error;
   }
+  await clearProductsCache();
 
   return res.status(200).json({
     success: true,

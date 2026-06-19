@@ -39,6 +39,7 @@ type ContactManagementTemplateProps = {
   title: string
   description: string
   singularLabel: string
+  canManage: boolean
   records: ContactRecord[]
   loading: boolean
   error: string | null
@@ -58,6 +59,7 @@ export function ContactManagementTemplate({
   title,
   description,
   singularLabel,
+  canManage,
   records,
   loading,
   error,
@@ -73,6 +75,7 @@ export function ContactManagementTemplate({
   const [formOpen, setFormOpen] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
+  const tableColumnCount = canManage ? 4 : 3
 
   const filteredRecords = useMemo(() => {
     const keyword = search.trim().toLowerCase()
@@ -156,12 +159,12 @@ export function ContactManagementTemplate({
     <ManagementPageLayout
       title={title}
       description={description}
-      addLabel={`Tambah ${singularLabel.toLowerCase()}`}
+      addLabel={canManage ? `Tambah ${singularLabel.toLowerCase()}` : undefined}
       searchValue={search}
       searchPlaceholder={`Cari ${singularLabel.toLowerCase()}...`}
       message={message}
       error={error}
-      onAdd={openCreateForm}
+      onAdd={canManage ? openCreateForm : undefined}
       onSearchChange={setSearch}
     >
       <div className="rounded-xl border bg-card">
@@ -171,19 +174,19 @@ export function ContactManagementTemplate({
               <TableHead>Nama</TableHead>
               <TableHead>Telepon</TableHead>
               <TableHead>Alamat</TableHead>
-              <TableHead className="w-28 text-right">Aksi</TableHead>
+              {canManage && <TableHead className="w-28 text-right">Aksi</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading && records.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
+                <TableCell colSpan={tableColumnCount} className="h-24 text-center text-muted-foreground">
                   Memuat data...
                 </TableCell>
               </TableRow>
             ) : filteredRecords.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
+                <TableCell colSpan={tableColumnCount} className="h-24 text-center text-muted-foreground">
                   Belum ada data yang cocok.
                 </TableCell>
               </TableRow>
@@ -195,26 +198,28 @@ export function ContactManagementTemplate({
                   <TableCell className="max-w-md whitespace-normal text-muted-foreground">
                     {record.address || "-"}
                   </TableCell>
-                  <TableCell>
-                    <div className="flex justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        title={`Edit ${singularLabel.toLowerCase()}`}
-                        onClick={() => openEditForm(record)}
-                      >
-                        <PencilIcon />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        title={`Hapus ${singularLabel.toLowerCase()}`}
-                        onClick={() => setDeleteTarget(record)}
-                      >
-                        <Trash2Icon />
-                      </Button>
-                    </div>
-                  </TableCell>
+                  {canManage && (
+                    <TableCell>
+                      <div className="flex justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          title={`Edit ${singularLabel.toLowerCase()}`}
+                          onClick={() => openEditForm(record)}
+                        >
+                          <PencilIcon />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          title={`Hapus ${singularLabel.toLowerCase()}`}
+                          onClick={() => setDeleteTarget(record)}
+                        >
+                          <Trash2Icon />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))
             )}
@@ -222,81 +227,85 @@ export function ContactManagementTemplate({
         </Table>
       </div>
 
-      <Dialog open={formOpen} onOpenChange={setFormOpen}>
-        <DialogContent>
-          <form onSubmit={handleSubmit}>
-            <DialogHeader>
-              <DialogTitle>
-                {editingRecord ? `Edit ${singularLabel}` : `Tambah ${singularLabel}`}
-              </DialogTitle>
-              <DialogDescription>
-                Lengkapi identitas dan informasi kontak.
-              </DialogDescription>
-            </DialogHeader>
+      {canManage && (
+        <>
+          <Dialog open={formOpen} onOpenChange={setFormOpen}>
+            <DialogContent>
+              <form onSubmit={handleSubmit}>
+                <DialogHeader>
+                  <DialogTitle>
+                    {editingRecord ? `Edit ${singularLabel}` : `Tambah ${singularLabel}`}
+                  </DialogTitle>
+                  <DialogDescription>
+                    Lengkapi identitas dan informasi kontak.
+                  </DialogDescription>
+                </DialogHeader>
 
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="contact-name">Nama</Label>
-                <Input
-                  id="contact-name"
-                  value={form.name}
-                  onChange={(event) => {
-                    setForm((current) => ({ ...current, name: event.target.value }))
-                    setFormError(null)
-                  }}
-                  autoFocus
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="contact-phone">Nomor telepon</Label>
-                <Input
-                  id="contact-phone"
-                  value={form.phone ?? ""}
-                  onChange={(event) =>
-                    setForm((current) => ({ ...current, phone: event.target.value }))
-                  }
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="contact-address">Alamat</Label>
-                <textarea
-                  id="contact-address"
-                  value={form.address ?? ""}
-                  onChange={(event) =>
-                    setForm((current) => ({ ...current, address: event.target.value }))
-                  }
-                  rows={4}
-                  className="w-full resize-none rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-                />
-              </div>
-              {(formError || error) && (
-                <p className="text-sm text-destructive">{formError || error}</p>
-              )}
-            </div>
+                <div className="grid gap-4 py-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="contact-name">Nama</Label>
+                    <Input
+                      id="contact-name"
+                      value={form.name}
+                      onChange={(event) => {
+                        setForm((current) => ({ ...current, name: event.target.value }))
+                        setFormError(null)
+                      }}
+                      autoFocus
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="contact-phone">Nomor telepon</Label>
+                    <Input
+                      id="contact-phone"
+                      value={form.phone ?? ""}
+                      onChange={(event) =>
+                        setForm((current) => ({ ...current, phone: event.target.value }))
+                      }
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="contact-address">Alamat</Label>
+                    <textarea
+                      id="contact-address"
+                      value={form.address ?? ""}
+                      onChange={(event) =>
+                        setForm((current) => ({ ...current, address: event.target.value }))
+                      }
+                      rows={4}
+                      className="w-full resize-none rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                    />
+                  </div>
+                  {(formError || error) && (
+                    <p className="text-sm text-destructive">{formError || error}</p>
+                  )}
+                </div>
 
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setFormOpen(false)}>
-                Batal
-              </Button>
-              <Button type="submit" disabled={loading}>
-                {loading ? "Menyimpan..." : "Simpan"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={() => setFormOpen(false)}>
+                    Batal
+                  </Button>
+                  <Button type="submit" disabled={loading}>
+                    {loading ? "Menyimpan..." : "Simpan"}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
 
-      <DeleteConfirmDialog
-        open={Boolean(deleteTarget)}
-        itemName={deleteTarget?.name ?? ""}
-        loading={loading}
-        onOpenChange={(open) => {
-          if (!open) {
-            setDeleteTarget(null)
-          }
-        }}
-        onConfirm={handleDelete}
-      />
+          <DeleteConfirmDialog
+            open={Boolean(deleteTarget)}
+            itemName={deleteTarget?.name ?? ""}
+            loading={loading}
+            onOpenChange={(open) => {
+              if (!open) {
+                setDeleteTarget(null)
+              }
+            }}
+            onConfirm={handleDelete}
+          />
+        </>
+      )}
     </ManagementPageLayout>
   )
 }

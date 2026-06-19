@@ -15,11 +15,12 @@ Server backend membutuhkan MySQL sesuai konfigurasi `.env`. Redis dipakai untuk 
 
 ## Setup Database
 
-Jalankan schema dan seed awal pada MySQL lokal:
+Siapkan database lokal, lalu jalankan schema dan seed awal:
 
 ```bash
-mysql -u root -p < ../database/schema.sql
-mysql -u root -p < ../database/seed.sql
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS pwl_pos"
+mysql -u root -p pwl_pos < ../database/schema.sql
+mysql -u root -p pwl_pos < ../database/seed.sql
 ```
 
 Seed awal membuat data pengujian berupa 3 akun, 5 kategori, 4 supplier,
@@ -52,6 +53,19 @@ Jangan menyimpan nilai `REDIS_URL` asli ke repository karena berisi password dat
 
 Cache Redis dipakai untuk `GET /api/products`, `GET /api/dashboard/summary`, dan dibersihkan saat data produk, kategori, supplier, atau transaksi penjualan berubah.
 
+## Hak Akses
+
+| Modul | Admin | Kasir | Owner |
+|---|---|---|---|
+| Dashboard | Lihat | Lihat aktivitas sendiri | Lihat |
+| Kategori dan supplier | Kelola | - | Lihat |
+| Produk | Kelola | Lihat melalui POS | Lihat |
+| Pelanggan | Kelola | Kelola | Lihat |
+| Transaksi baru | Buat | Buat | - |
+| Riwayat penjualan | Lihat | Lihat | Lihat |
+
+Request dengan role yang tidak memiliki izin akan mendapatkan response `403 Forbidden`.
+
 ## Scripts
 
 ```bash
@@ -64,10 +78,12 @@ npm test        # menjalankan automated test
 
 ```text
 GET    /api/health
+GET    /api/health/ready
 POST   /api/auth/login
 GET    /api/auth/me
 POST   /api/auth/logout
 GET    /api/dashboard/summary    (Redis cached)
+GET    /api/dashboard/cashier-summary
 GET    /api/categories
 POST   /api/categories
 GET    /api/categories/:id
@@ -93,7 +109,7 @@ POST   /api/sales
 GET    /api/sales/:id
 ```
 
-Total: 28 endpoint.
+Total: 30 endpoint.
 
 Base URL local:
 
@@ -113,3 +129,8 @@ Response sukses:
   }
 }
 ```
+
+## Deployment
+
+Panduan environment production, MySQL cloud, health check, dan pembuatan admin
+tersedia di [`docs/deployment.md`](../docs/deployment.md).

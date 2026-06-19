@@ -3,8 +3,6 @@
 -- kasir@kasirku.test / Admin12345
 -- owner@kasirku.test / Admin12345
 
-USE pwl_pos;
-
 INSERT INTO roles (name)
 VALUES ('admin'), ('kasir'), ('owner')
 ON DUPLICATE KEY UPDATE name = VALUES(name);

@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+
 import type { CustomerPayload } from "@/api/customerService"
 import { ContactManagementTemplate } from "@/components/templates/ContactManagementTemplate"
 import { useAppDispatch, useAppSelector } from "@/store"
@@ -13,6 +14,8 @@ import {
 export default function CustomersPage() {
   const dispatch = useAppDispatch()
   const { customers, loading, error } = useAppSelector((state) => state.customers)
+  const role = useAppSelector((state) => state.auth.user?.role)
+  const canManageCustomers = role === "admin" || role === "kasir"
 
   useEffect(() => {
     dispatch(fetchCustomers())
@@ -21,8 +24,9 @@ export default function CustomersPage() {
   return (
     <ContactManagementTemplate
       title="Pelanggan"
-      description="Simpan identitas pelanggan untuk transaksi yang lebih cepat."
+      description="Data pelanggan bersifat opsional untuk pembeli yang ingin dicatat."
       singularLabel="Pelanggan"
+      canManage={canManageCustomers}
       records={customers}
       loading={loading}
       error={error}
