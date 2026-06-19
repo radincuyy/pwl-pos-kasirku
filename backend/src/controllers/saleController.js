@@ -2,7 +2,7 @@ const crypto = require('crypto');
 
 const { pool } = require('../config/database');
 const createHttpError = require('../utils/createHttpError');
-const { clearProductsCache } = require('../utils/cache');
+const { clearProductDataCache } = require('../utils/cache');
 
 const paymentMethods = ['cash', 'transfer', 'qris', 'debit'];
 
@@ -153,7 +153,8 @@ async function findSaleById(id) {
   const [sales] = await pool.execute(
     `SELECT sales.id, sales.invoice_number, sales.user_id, users.name AS cashier_name,
             sales.customer_id, customers.name AS customer_name, sales.total_amount,
-            sales.paid_amount, sales.change_amount, sales.payment_method, sales.status,
+            sales.paid_amount, sales.change_amount,
+            sales.payment_method, sales.status,
             sales.sale_date, sales.created_at, sales.updated_at
      FROM sales
      INNER JOIN users ON users.id = sales.user_id
@@ -185,7 +186,8 @@ async function getSales(req, res) {
   const [rows] = await pool.execute(
     `SELECT sales.id, sales.invoice_number, sales.user_id, users.name AS cashier_name,
             sales.customer_id, customers.name AS customer_name, sales.total_amount,
-            sales.paid_amount, sales.change_amount, sales.payment_method, sales.status,
+            sales.paid_amount, sales.change_amount,
+            sales.payment_method, sales.status,
             sales.sale_date, sales.created_at, sales.updated_at
      FROM sales
      INNER JOIN users ON users.id = sales.user_id
@@ -220,7 +222,6 @@ async function getSaleById(req, res) {
 
 async function createSale(req, res) {
   const payload = normalizeSalePayload(req.body);
-  await clearProductsCache();
 
   const connection = await pool.getConnection();
   let saleId = null;
@@ -312,6 +313,7 @@ async function createSale(req, res) {
     }
 
     await connection.commit();
+    await clearProductDataCache();
   } catch (error) {
     await connection.rollback();
 
