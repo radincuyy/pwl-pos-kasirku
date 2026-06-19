@@ -1,6 +1,7 @@
 import type { ComponentProps, ReactNode } from "react"
 import { Link } from "react-router-dom"
-import { CommandIcon } from "lucide-react"
+
+import logoIcon from "@/assets/icon.png"
 
 import {
   NavMain,
@@ -54,7 +55,7 @@ export function AppSidebar({
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
               <Link to={homeUrl}>
-                <CommandIcon className="size-5!" />
+                <img src={logoIcon} alt="KasirKu Logo" className="size-5! object-contain" />
                 <span className="text-base font-semibold">KasirKu</span>
               </Link>
             </SidebarMenuButton>
