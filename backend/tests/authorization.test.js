@@ -102,4 +102,22 @@ describe('Role authorization', () => {
 
     expect(response.body.message).toBe('Anda tidak memiliki izin untuk mengakses fitur ini');
   });
+
+  it('blocks owner from accessing cashier dashboard', async () => {
+    const response = await withRole(
+      request(app).get('/api/dashboard/cashier-summary'),
+      'owner'
+    ).expect(403);
+
+    expect(response.body.message).toBe('Anda tidak memiliki izin untuk mengakses fitur ini');
+  });
+
+  it('blocks cashier from accessing management dashboard', async () => {
+    const response = await withRole(
+      request(app).get('/api/dashboard/summary'),
+      'kasir'
+    ).expect(403);
+
+    expect(response.body.message).toBe('Anda tidak memiliki izin untuk mengakses fitur ini');
+  });
 });

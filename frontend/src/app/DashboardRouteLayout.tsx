@@ -30,7 +30,7 @@ const navigationDefinitions: SidebarNavigationDefinition[] = [
     title: "Dashboard",
     url: "/",
     icon: <LayoutDashboardIcon />,
-    allowedRoles: ["admin", "owner"],
+    allowedRoles: ["admin", "kasir", "owner"],
   },
   {
     title: "Produk",

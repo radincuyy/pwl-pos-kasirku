@@ -8,6 +8,12 @@ export const roleLabels: Record<UserRole, string> = {
   owner: "Owner",
 }
 
+const defaultRoutes: Record<UserRole, string> = {
+  admin: "/",
+  kasir: "/",
+  owner: "/",
+}
+
 export function isUserRole(value: unknown): value is UserRole {
   return typeof value === "string" && userRoles.some((role) => role === value)
 }
@@ -20,9 +26,5 @@ export function hasAllowedRole(
 }
 
 export function getDefaultRoute(role: UserRole): string {
-  if (role === "kasir") {
-    return "/sales/new"
-  }
-
-  return "/"
+  return defaultRoutes[role]
 }

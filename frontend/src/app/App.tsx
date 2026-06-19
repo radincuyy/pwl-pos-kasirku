@@ -34,7 +34,7 @@ export default function App() {
             <Route
               index
               element={
-                <RoleRoute allowedRoles={adminAndOwner}>
+                <RoleRoute allowedRoles={allRoles}>
                   <DashboardPage />
                 </RoleRoute>
               }
