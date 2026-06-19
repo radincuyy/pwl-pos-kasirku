@@ -1,3 +1,5 @@
+import { PrinterIcon } from "lucide-react"
+
 import type { SaleDetail } from "@/api/saleService"
 import { Badge } from "@/components/atoms/ui/badge"
 import { Button } from "@/components/atoms/ui/button"
@@ -10,11 +12,13 @@ import {
   DialogTitle,
 } from "@/components/atoms/ui/dialog"
 import { Separator } from "@/components/atoms/ui/separator"
+import { PrintableReceipt } from "@/components/molecules/sales/PrintableReceipt"
 import {
   formatCurrency,
   formatDateTime,
   formatPaymentMethod,
 } from "@/lib/format"
+import { printReceipt } from "@/lib/printReceipt"
 
 type SaleReceiptDialogProps = {
   open: boolean
@@ -60,7 +64,7 @@ export function SaleReceiptDialog({
                   <div className="min-w-0">
                     <p className="truncate font-medium">{item.productName}</p>
                     <p className="text-xs text-muted-foreground">
-                      {item.quantity} × {formatCurrency(item.price)}
+                      {item.quantity} x {formatCurrency(item.price)}
                     </p>
                   </div>
                   <p className="font-medium tabular-nums">
@@ -100,9 +104,15 @@ export function SaleReceiptDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Transaksi baru
           </Button>
+          <Button variant="outline" onClick={printReceipt} disabled={!sale}>
+            <PrinterIcon />
+            Cetak struk
+          </Button>
           <Button onClick={onViewHistory}>Lihat riwayat</Button>
         </DialogFooter>
       </DialogContent>
+
+      {sale && <PrintableReceipt sale={sale} />}
     </Dialog>
   )
 }

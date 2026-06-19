@@ -160,7 +160,7 @@ export function SaleCart({
 
       <CardFooter className="block space-y-4">
         <div className="grid gap-2">
-          <Label>Pelanggan</Label>
+          <Label>Pelanggan (opsional)</Label>
           <Select
             value={selectedCustomerId?.toString() ?? "general"}
             onValueChange={(value) =>
@@ -179,21 +179,30 @@ export function SaleCart({
               ))}
             </SelectContent>
           </Select>
+          <p className="text-xs text-muted-foreground">
+            Biarkan pelanggan umum untuk transaksi retail biasa.
+          </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <div className="grid gap-2">
-            <Label>Metode pembayaran</Label>
+        <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-end gap-3">
+          <div className="grid min-w-0 gap-2">
+            <Label className="min-h-5">Metode pembayaran</Label>
             <Select
               value={paymentMethod}
               onValueChange={(value) =>
                 onPaymentMethodChange(value as PaymentMethod)
               }
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="h-9 w-full">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent
+                position="popper"
+                align="start"
+                side="bottom"
+                sideOffset={4}
+                className="w-[var(--radix-select-trigger-width)] min-w-[var(--radix-select-trigger-width)]"
+              >
                 <SelectItem value="cash">Tunai</SelectItem>
                 <SelectItem value="transfer">Transfer</SelectItem>
                 <SelectItem value="qris">QRIS</SelectItem>
@@ -201,13 +210,16 @@ export function SaleCart({
               </SelectContent>
             </Select>
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="paid-amount">Nominal bayar</Label>
+          <div className="grid min-w-0 gap-2">
+            <Label htmlFor="paid-amount" className="min-h-5">
+              Nominal bayar
+            </Label>
             <Input
               id="paid-amount"
               type="number"
               min="0"
               value={paidAmount || ""}
+              className="h-9 w-full"
               onChange={(event) => {
                 const amount = Number(event.target.value)
                 onPaidAmountChange(Number.isFinite(amount) ? amount : 0)

@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+
 import type { CustomerPayload } from "@/api/customerService"
 import { ContactManagementTemplate } from "@/components/templates/ContactManagementTemplate"
 import { useAppDispatch, useAppSelector } from "@/store"
@@ -23,7 +24,7 @@ export default function CustomersPage() {
   return (
     <ContactManagementTemplate
       title="Pelanggan"
-      description="Simpan identitas pelanggan untuk transaksi yang lebih cepat."
+      description="Data pelanggan bersifat opsional untuk pembeli yang ingin dicatat."
       singularLabel="Pelanggan"
       canManage={canManageCustomers}
       records={customers}
