@@ -14,6 +14,14 @@ function toRecentSaleResponse(sale) {
   };
 }
 
+function toSalesTrendResponse(row) {
+  return {
+    date: row.sale_date,
+    transactionCount: Number(row.transaction_count),
+    revenue: Number(row.revenue)
+  };
+}
+
 async function getSummary(req, res) {
   const cachedSummary = await getCache(cacheKeys.dashboardSummary);
 
@@ -29,15 +37,22 @@ async function getSummary(req, res) {
     'SELECT COUNT(*) AS total FROM products'
   );
 
-  const [[salesCount]] = await pool.execute(
-    'SELECT COUNT(*) AS total FROM sales WHERE status = ?',
-    ['paid']
+  const [[salesToday]] = await pool.execute(
+    `SELECT COUNT(*) AS total
+     FROM sales
+     WHERE status = 'paid' AND DATE(sale_date) = CURDATE()`
   );
 
   const [[revenueToday]] = await pool.execute(
     `SELECT COALESCE(SUM(total_amount), 0) AS total
      FROM sales
      WHERE status = 'paid' AND DATE(sale_date) = CURDATE()`
+  );
+
+  const [[totalRevenue]] = await pool.execute(
+    `SELECT COALESCE(SUM(total_amount), 0) AS total
+     FROM sales
+     WHERE status = 'paid'`
   );
 
   const [lowStockProducts] = await pool.execute(
@@ -61,10 +76,22 @@ async function getSummary(req, res) {
      LIMIT 5`
   );
 
+  const [salesTrend] = await pool.execute(
+    `SELECT DATE_FORMAT(sale_date, '%Y-%m-%d') AS sale_date,
+            COUNT(*) AS transaction_count,
+            COALESCE(SUM(total_amount), 0) AS revenue
+     FROM sales
+     WHERE status = 'paid'
+       AND sale_date >= CURDATE() - INTERVAL 89 DAY
+     GROUP BY DATE_FORMAT(sale_date, '%Y-%m-%d')
+     ORDER BY DATE_FORMAT(sale_date, '%Y-%m-%d') ASC`
+  );
+
   const summary = {
     totalProducts: Number(productCount.total),
-    totalSales: Number(salesCount.total),
+    totalSalesToday: Number(salesToday.total),
     revenueToday: Number(revenueToday.total),
+    totalRevenue: Number(totalRevenue.total),
     lowStockProducts: lowStockProducts.map((p) => ({
       id: p.id,
       sku: p.sku,
@@ -73,7 +100,8 @@ async function getSummary(req, res) {
       minimumStock: Number(p.minimum_stock),
       categoryName: p.category_name
     })),
-    recentSales: recentSales.map(toRecentSaleResponse)
+    recentSales: recentSales.map(toRecentSaleResponse),
+    salesTrend: salesTrend.map(toSalesTrendResponse)
   };
 
   await setCache(cacheKeys.dashboardSummary, summary, 60);
@@ -116,6 +144,18 @@ async function getCashierSummary(req, res) {
     [req.user.id]
   );
 
+  const [salesTrend] = await pool.execute(
+    `SELECT DATE_FORMAT(sale_date, '%Y-%m-%d') AS sale_date,
+            COUNT(*) AS transaction_count,
+            COALESCE(SUM(total_amount), 0) AS revenue
+     FROM sales
+     WHERE user_id = ? AND status = 'paid'
+       AND sale_date >= CURDATE() - INTERVAL 89 DAY
+     GROUP BY DATE_FORMAT(sale_date, '%Y-%m-%d')
+     ORDER BY DATE_FORMAT(sale_date, '%Y-%m-%d') ASC`,
+    [req.user.id]
+  );
+
   return res.status(200).json({
     success: true,
     message: 'Data dashboard kasir berhasil diambil',
@@ -124,7 +164,8 @@ async function getCashierSummary(req, res) {
         totalSalesToday: Number(todaySummary.total_sales),
         revenueToday: Number(todaySummary.revenue),
         itemsSoldToday: Number(itemsSoldToday.total),
-        recentSales: recentSales.map(toRecentSaleResponse)
+        recentSales: recentSales.map(toRecentSaleResponse),
+        salesTrend: salesTrend.map(toSalesTrendResponse)
       }
     }
   });

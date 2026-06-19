@@ -15,6 +15,7 @@ import type { CashierDashboardSummary } from "@/api/dashboardService"
 import { Badge } from "@/components/atoms/ui/badge"
 import { Button } from "@/components/atoms/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/atoms/ui/card"
+import { SalesTrendChart } from "@/components/organisms/dashboard/SalesTrendChart"
 import {
   formatCurrency,
   formatDateTime,
@@ -98,6 +99,11 @@ function CashierDashboard({
           icon={<PackageCheckIcon className="size-5" />}
         />
       </div>
+
+      <SalesTrendChart
+        data={summary.salesTrend}
+        description="Pendapatan dan jumlah transaksi yang kamu proses"
+      />
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between gap-3">
@@ -262,7 +268,7 @@ export default function DashboardPage() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <SummaryCard
           title="Total produk"
           value={summary.totalProducts.toString()}
@@ -270,9 +276,9 @@ export default function DashboardPage() {
           icon={<BoxIcon className="size-5" />}
         />
         <SummaryCard
-          title="Total penjualan"
-          value={summary.totalSales.toString()}
-          description="Jumlah transaksi yang sudah tersimpan."
+          title="Transaksi hari ini"
+          value={summary.totalSalesToday.toString()}
+          description="Transaksi lunas pada tanggal berjalan."
           icon={<ReceiptTextIcon className="size-5" />}
         />
         <SummaryCard
@@ -281,7 +287,18 @@ export default function DashboardPage() {
           description="Akumulasi penjualan pada tanggal berjalan."
           icon={<WalletIcon className="size-5" />}
         />
+        <SummaryCard
+          title="Total pendapatan"
+          value={formatCurrency(summary.totalRevenue)}
+          description="Akumulasi seluruh transaksi yang sudah lunas."
+          icon={<WalletIcon className="size-5" />}
+        />
       </div>
+
+      <SalesTrendChart
+        data={summary.salesTrend}
+        description="Pendapatan dan jumlah transaksi seluruh toko"
+      />
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         <Card>

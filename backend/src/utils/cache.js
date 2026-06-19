@@ -2,7 +2,7 @@ const { getRedisClient, redisConfig } = require('../config/redis');
 
 const cacheKeys = {
   productsList: 'products:list',
-  dashboardSummary: 'dashboard:summary'
+  dashboardSummary: 'dashboard:summary:v4'
 };
 
 async function getCache(key) {

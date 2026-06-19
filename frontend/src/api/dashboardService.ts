@@ -11,10 +11,17 @@ export interface RecentDashboardSale {
   saleDate: string
 }
 
+export interface SalesTrendPoint {
+  date: string
+  transactionCount: number
+  revenue: number
+}
+
 export interface DashboardSummary {
   totalProducts: number
-  totalSales: number
+  totalSalesToday: number
   revenueToday: number
+  totalRevenue: number
   lowStockProducts: {
     id: number
     sku: string
@@ -24,6 +31,7 @@ export interface DashboardSummary {
     categoryName: string
   }[]
   recentSales: RecentDashboardSale[]
+  salesTrend: SalesTrendPoint[]
 }
 
 export interface CashierDashboardSummary {
@@ -31,6 +39,7 @@ export interface CashierDashboardSummary {
   revenueToday: number
   itemsSoldToday: number
   recentSales: RecentDashboardSale[]
+  salesTrend: SalesTrendPoint[]
 }
 
 export const dashboardService = {
