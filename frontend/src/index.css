@@ -128,3 +128,102 @@
     @apply font-sans;
     }
 }
+
+.receipt-print-root {
+  display: none;
+}
+
+@media print {
+  @page {
+    margin: 4mm;
+  }
+
+  body.receipt-printing {
+    background: #fff;
+  }
+
+  body.receipt-printing * {
+    visibility: hidden !important;
+  }
+
+  body.receipt-printing .receipt-print-root,
+  body.receipt-printing .receipt-print-root * {
+    visibility: visible !important;
+  }
+
+  body.receipt-printing .receipt-print-root {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 72mm;
+    color: #000;
+    background: #fff;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
+    font-size: 10px;
+    line-height: 1.4;
+  }
+
+  .receipt-print-root p {
+    margin: 0;
+  }
+
+  .receipt-print-header {
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .receipt-print-brand {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .receipt-print-meta,
+  .receipt-print-totals {
+    display: grid;
+    gap: 3px;
+    padding: 8px 0;
+    border-top: 1px dashed #000;
+  }
+
+  .receipt-print-meta > div,
+  .receipt-print-totals > div,
+  .receipt-print-item > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .receipt-print-meta > div > :last-child,
+  .receipt-print-totals > div > :last-child,
+  .receipt-print-item > div > :last-child {
+    text-align: right;
+  }
+
+  .receipt-print-items {
+    padding: 4px 0 8px;
+    border-top: 1px dashed #000;
+  }
+
+  .receipt-print-item {
+    padding-top: 5px;
+    break-inside: avoid;
+  }
+
+  .receipt-print-item > p {
+    font-weight: 600;
+  }
+
+  .receipt-print-total {
+    padding-top: 5px;
+    border-top: 1px dashed #000;
+    font-size: 12px;
+  }
+
+  .receipt-print-footer {
+    padding-top: 12px;
+    border-top: 1px dashed #000;
+    text-align: center;
+  }
+}

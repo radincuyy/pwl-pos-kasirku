@@ -6,13 +6,13 @@ import { Input } from "@/components/atoms/ui/input"
 type ManagementPageLayoutProps = {
   title: string
   description: string
-  addLabel: string
+  addLabel?: string
   searchValue: string
   searchPlaceholder: string
   message: string | null
   error: string | null
   children: ReactNode
-  onAdd: () => void
+  onAdd?: () => void
   onSearchChange: (value: string) => void
 }
 
@@ -35,10 +35,12 @@ export function ManagementPageLayout({
           <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
           <p className="text-sm text-muted-foreground">{description}</p>
         </div>
-        <Button onClick={onAdd}>
-          <PlusIcon className="size-4" />
-          {addLabel}
-        </Button>
+        {addLabel && onAdd && (
+          <Button onClick={onAdd}>
+            <PlusIcon className="size-4" />
+            {addLabel}
+          </Button>
+        )}
       </div>
 
       <div className="relative w-full max-w-sm">

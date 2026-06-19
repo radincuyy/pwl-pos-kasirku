@@ -8,16 +8,17 @@ const {
   deleteCategory
 } = require('../controllers/categoryController');
 const authMiddleware = require('../middlewares/authMiddleware');
+const authorizeRoles = require('../middlewares/authorizeRoles');
 const asyncHandler = require('../utils/asyncHandler');
 
 const router = express.Router();
 
 router.use(authMiddleware);
 
-router.get('/', asyncHandler(getCategories));
-router.get('/:id', asyncHandler(getCategoryById));
-router.post('/', asyncHandler(createCategory));
-router.put('/:id', asyncHandler(updateCategory));
-router.delete('/:id', asyncHandler(deleteCategory));
+router.get('/', authorizeRoles('admin', 'owner'), asyncHandler(getCategories));
+router.get('/:id', authorizeRoles('admin', 'owner'), asyncHandler(getCategoryById));
+router.post('/', authorizeRoles('admin'), asyncHandler(createCategory));
+router.put('/:id', authorizeRoles('admin'), asyncHandler(updateCategory));
+router.delete('/:id', authorizeRoles('admin'), asyncHandler(deleteCategory));
 
 module.exports = router;

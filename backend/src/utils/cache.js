@@ -1,7 +1,8 @@
 const { getRedisClient, redisConfig } = require('../config/redis');
 
 const cacheKeys = {
-  productsList: 'products:list'
+  productsList: 'products:list',
+  dashboardSummary: 'dashboard:summary'
 };
 
 async function getCache(key) {
@@ -61,8 +62,21 @@ async function clearProductsCache() {
   await deleteCache(cacheKeys.productsList);
 }
 
+async function clearDashboardCache() {
+  await deleteCache(cacheKeys.dashboardSummary);
+}
+
+async function clearProductDataCache() {
+  await deleteCache([
+    cacheKeys.productsList,
+    cacheKeys.dashboardSummary
+  ]);
+}
+
 module.exports = {
   cacheKeys,
+  clearDashboardCache,
+  clearProductDataCache,
   clearProductsCache,
   deleteCache,
   getCache,

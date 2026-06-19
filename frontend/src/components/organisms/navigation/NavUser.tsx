@@ -29,6 +29,7 @@ export function NavUser({
   user: {
     name: string
     email: string
+    roleLabel: string
     avatar: string
   }
 }) {
@@ -56,7 +57,7 @@ export function NavUser({
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
                 <span className="truncate text-xs text-muted-foreground">
-                  {user.email}
+                  {user.roleLabel}
                 </span>
               </div>
               <EllipsisVerticalIcon className="ml-auto size-4" />
@@ -78,6 +79,9 @@ export function NavUser({
                   <span className="truncate font-medium">{user.name}</span>
                   <span className="truncate text-xs text-muted-foreground">
                     {user.email}
+                  </span>
+                  <span className="truncate text-xs text-muted-foreground">
+                    {user.roleLabel}
                   </span>
                 </div>
               </div>

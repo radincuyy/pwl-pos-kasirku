@@ -2,33 +2,35 @@
 
 import { useEffect, type ReactNode } from "react"
 import { Link } from "react-router-dom"
-import { AlertTriangleIcon, BoxIcon, ReceiptTextIcon, RefreshCwIcon, ShoppingCartIcon, WalletIcon } from "lucide-react"
+import {
+  AlertTriangleIcon,
+  BoxIcon,
+  PackageCheckIcon,
+  ReceiptTextIcon,
+  RefreshCwIcon,
+  ShoppingCartIcon,
+  WalletIcon,
+} from "lucide-react"
+import type { CashierDashboardSummary } from "@/api/dashboardService"
 import { Badge } from "@/components/atoms/ui/badge"
 import { Button } from "@/components/atoms/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/atoms/ui/card"
+import {
+  formatCurrency,
+  formatDateTime,
+  formatPaymentMethod,
+} from "@/lib/format"
 import { useAppDispatch, useAppSelector } from "@/store"
-import { fetchDashboardSummary } from "@/store/dashboardSlice"
+import {
+  fetchCashierDashboardSummary,
+  fetchDashboardSummary,
+} from "@/store/dashboardSlice"
 
 type SummaryCardProps = {
   title: string
   value: string
   description: string
   icon: ReactNode
-}
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value)
-}
-
-function formatDateTime(value: string): string {
-  return new Intl.DateTimeFormat("id-ID", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(value))
 }
 
 function SummaryCard({ title, value, description, icon }: SummaryCardProps) {
@@ -52,15 +54,139 @@ function SummaryCard({ title, value, description, icon }: SummaryCardProps) {
   )
 }
 
+function CashierDashboard({
+  summary,
+  cashierName,
+}: {
+  summary: CashierDashboardSummary
+  cashierName: string
+}) {
+  return (
+    <div className="flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-semibold">Halo, {cashierName}</h2>
+          <p className="text-sm text-muted-foreground">
+            Ringkasan transaksi yang kamu tangani hari ini.
+          </p>
+        </div>
+        <Button asChild size="lg">
+          <Link to="/sales/new">
+            <ShoppingCartIcon />
+            Transaksi baru
+          </Link>
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <SummaryCard
+          title="Transaksi hari ini"
+          value={summary.totalSalesToday.toString()}
+          description="Transaksi lunas yang kamu proses."
+          icon={<ReceiptTextIcon className="size-5" />}
+        />
+        <SummaryCard
+          title="Penjualan hari ini"
+          value={formatCurrency(summary.revenueToday)}
+          description="Total nilai transaksi yang kamu tangani."
+          icon={<WalletIcon className="size-5" />}
+        />
+        <SummaryCard
+          title="Item terjual"
+          value={summary.itemsSoldToday.toString()}
+          description="Jumlah barang terjual dari transaksimu."
+          icon={<PackageCheckIcon className="size-5" />}
+        />
+      </div>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between gap-3">
+          <div>
+            <CardTitle>Transaksi terakhir</CardTitle>
+            <CardDescription>Penjualan terbaru yang kamu proses.</CardDescription>
+          </div>
+          <Button asChild variant="outline" size="sm">
+            <Link to="/sales">Lihat riwayat</Link>
+          </Button>
+        </CardHeader>
+        <CardContent>
+          {summary.recentSales.length === 0 ? (
+            <div className="flex min-h-40 flex-col items-center justify-center gap-3 text-center">
+              <ReceiptTextIcon className="size-8 text-muted-foreground" />
+              <div>
+                <p className="font-medium">Belum ada transaksi</p>
+                <p className="text-sm text-muted-foreground">
+                  Transaksi yang kamu buat akan muncul di sini.
+                </p>
+              </div>
+              <Button asChild>
+                <Link to="/sales/new">Mulai transaksi</Link>
+              </Button>
+            </div>
+          ) : (
+            <div className="divide-y">
+              {summary.recentSales.map((sale) => (
+                <div
+                  key={sale.id}
+                  className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate font-medium">{sale.invoiceNumber}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {sale.customerName ?? "Umum"} | {formatDateTime(sale.saleDate)}
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between gap-3 sm:justify-end">
+                    <Badge variant="secondary">
+                      {formatPaymentMethod(sale.paymentMethod)}
+                    </Badge>
+                    <p className="font-medium tabular-nums">
+                      {formatCurrency(sale.totalAmount)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
 export default function DashboardPage() {
   const dispatch = useAppDispatch()
-  const { summary, loading, error } = useAppSelector((state) => state.dashboard)
+  const { summary, cashierSummary, loading, error } = useAppSelector(
+    (state) => state.dashboard
+  )
+  const user = useAppSelector((state) => state.auth.user)
+  const role = user?.role
+  const isCashier = role === "kasir"
+  const canViewProducts = role === "admin" || role === "owner"
+  const canCreateSales = role === "admin"
+  const activeSummary = isCashier ? cashierSummary : summary
 
   useEffect(() => {
-    dispatch(fetchDashboardSummary())
-  }, [dispatch])
+    if (role === "kasir") {
+      dispatch(fetchCashierDashboardSummary())
+      return
+    }
 
-  if (loading && !summary) {
+    if (role === "admin" || role === "owner") {
+      dispatch(fetchDashboardSummary())
+    }
+  }, [dispatch, role])
+
+  const handleRetry = (): void => {
+    if (isCashier) {
+      void dispatch(fetchCashierDashboardSummary())
+      return
+    }
+
+    void dispatch(fetchDashboardSummary())
+  }
+
+  if (loading && !activeSummary) {
     return (
       <div className="flex flex-col gap-4 p-4 lg:p-6">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -76,7 +202,7 @@ export default function DashboardPage() {
     )
   }
 
-  if (error && !summary) {
+  if (error && !activeSummary) {
     return (
       <div className="p-4 lg:p-6">
         <Card>
@@ -90,13 +216,26 @@ export default function DashboardPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button onClick={() => dispatch(fetchDashboardSummary())}>
+            <Button onClick={handleRetry}>
               <RefreshCwIcon className="size-4" />
               Coba lagi
             </Button>
           </CardContent>
         </Card>
       </div>
+    )
+  }
+
+  if (!activeSummary || !user) {
+    return null
+  }
+
+  if (isCashier && cashierSummary) {
+    return (
+      <CashierDashboard
+        summary={cashierSummary}
+        cashierName={user.name}
+      />
     )
   }
 
@@ -113,12 +252,14 @@ export default function DashboardPage() {
             Ringkasan aktivitas penjualan dan stok toko.
           </p>
         </div>
-        <Button asChild>
-          <Link to="/sales/new">
-            <ShoppingCartIcon className="size-4" />
-            Transaksi baru
-          </Link>
-        </Button>
+        {canCreateSales && (
+          <Button asChild>
+            <Link to="/sales/new">
+              <ShoppingCartIcon className="size-4" />
+              Transaksi baru
+            </Link>
+          </Button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -149,9 +290,11 @@ export default function DashboardPage() {
               <CardTitle>Produk stok rendah</CardTitle>
               <CardDescription>Produk yang perlu segera diperiksa.</CardDescription>
             </div>
-            <Button asChild variant="outline" size="sm">
-              <Link to="/products">Lihat produk</Link>
-            </Button>
+            {canViewProducts && (
+              <Button asChild variant="outline" size="sm">
+                <Link to="/products">Lihat produk</Link>
+              </Button>
+            )}
           </CardHeader>
           <CardContent>
             {summary.lowStockProducts.length === 0 ? (

@@ -52,6 +52,19 @@ Jangan menyimpan nilai `REDIS_URL` asli ke repository karena berisi password dat
 
 Cache Redis dipakai untuk `GET /api/products`, `GET /api/dashboard/summary`, dan dibersihkan saat data produk, kategori, supplier, atau transaksi penjualan berubah.
 
+## Hak Akses
+
+| Modul | Admin | Kasir | Owner |
+|---|---|---|---|
+| Dashboard | Lihat | Lihat aktivitas sendiri | Lihat |
+| Kategori dan supplier | Kelola | - | Lihat |
+| Produk | Kelola | Lihat melalui POS | Lihat |
+| Pelanggan | Kelola | Kelola | Lihat |
+| Transaksi baru | Buat | Buat | - |
+| Riwayat penjualan | Lihat | Lihat | Lihat |
+
+Request dengan role yang tidak memiliki izin akan mendapatkan response `403 Forbidden`.
+
 ## Scripts
 
 ```bash
@@ -68,6 +81,7 @@ POST   /api/auth/login
 GET    /api/auth/me
 POST   /api/auth/logout
 GET    /api/dashboard/summary    (Redis cached)
+GET    /api/dashboard/cashier-summary
 GET    /api/categories
 POST   /api/categories
 GET    /api/categories/:id
@@ -93,7 +107,7 @@ POST   /api/sales
 GET    /api/sales/:id
 ```
 
-Total: 28 endpoint.
+Total: 29 endpoint.
 
 Base URL local:
 

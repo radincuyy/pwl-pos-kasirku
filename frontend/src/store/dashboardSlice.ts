@@ -1,16 +1,21 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { dashboardService } from "../api/dashboardService";
 import { getApiErrorMessage } from "../api/error";
-import type { DashboardSummary } from "../api/dashboardService";
+import type {
+  CashierDashboardSummary,
+  DashboardSummary,
+} from "../api/dashboardService";
 
 interface DashboardState {
   summary: DashboardSummary | null;
+  cashierSummary: CashierDashboardSummary | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: DashboardState = {
   summary: null,
+  cashierSummary: null,
   loading: false,
   error: null,
 };
@@ -27,6 +32,24 @@ export const fetchDashboardSummary = createAsyncThunk(
       return data.summary;
     } catch (error) {
       return rejectWithValue(getApiErrorMessage(error, "Failed to fetch dashboard summary"));
+    }
+  }
+);
+
+export const fetchCashierDashboardSummary = createAsyncThunk(
+  "dashboard/fetchCashierSummary",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await dashboardService.getCashierSummary();
+      const { success, message, data } = response.data;
+      if (!success) {
+        return rejectWithValue(message || "Failed to fetch cashier dashboard summary");
+      }
+      return data.summary;
+    } catch (error) {
+      return rejectWithValue(
+        getApiErrorMessage(error, "Failed to fetch cashier dashboard summary")
+      );
     }
   }
 );
@@ -50,6 +73,18 @@ const dashboardSlice = createSlice({
         state.summary = action.payload;
       })
       .addCase(fetchDashboardSummary.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(fetchCashierDashboardSummary.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchCashierDashboardSummary.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cashierSummary = action.payload;
+      })
+      .addCase(fetchCashierDashboardSummary.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

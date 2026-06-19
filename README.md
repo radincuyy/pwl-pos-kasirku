@@ -4,7 +4,7 @@ Aplikasi web Point of Sales untuk mengelola produk, stok, pelanggan, dan transak
 
 ## Studi Kasus
 
-KasirKu Web membantu operasional toko atau usaha retail melalui pengelolaan produk, kategori, supplier, pelanggan, transaksi penjualan, stok, dan dashboard ringkasan bisnis.
+KasirKu Web membantu operasional toko atau usaha retail melalui pengelolaan produk, kategori, supplier, pelanggan opsional, transaksi penjualan, stok, dan dashboard ringkasan bisnis.
 
 ## Tech Stack
 
@@ -16,7 +16,7 @@ KasirKu Web membantu operasional toko atau usaha retail melalui pengelolaan prod
 - Backend: NodeJS Express
 - Database: MySQL
 - Caching: Redis
-- Authentication: JWT + bcrypt
+- Authentication: JWT + bcrypt + Role-Based Access Control
 - Version Control: Git + GitHub
 
 ## Arsitektur Singkat
@@ -60,13 +60,14 @@ pwl-pos-kasirku/
 
 ### Fase Saat Ini
 
-Project saat ini berada di **Phase 7: Transaksi POS dan Riwayat Penjualan**. Phase 6 sudah mencakup halaman CRUD produk, kategori, supplier, dan pelanggan yang terhubung ke Redux serta REST API. Pengerjaan berikutnya berfokus pada antarmuka kasir, pembuatan transaksi, dan riwayat penjualan.
+Project saat ini berada di **Phase 8: Pengujian Akhir dan Stabilisasi**. Seluruh fitur inti sudah diimplementasikan dan lolos validasi otomatis, smoke test API, serta pengujian koneksi Redis. Pekerjaan teknis yang tersisa adalah pengujian end-to-end secara manual pada browser untuk setiap role dan perbaikan jika ditemukan masalah.
 
 ### Backend
 
 - [x] Setup backend Express
 - [x] Setup koneksi database MySQL
 - [x] Implementasi authentication (JWT + bcrypt)
+- [x] Implementasi otorisasi berbasis role (admin, kasir, owner)
 - [x] Validasi schema dan seed di MySQL lokal
 - [x] Implementasi CRUD kategori
 - [x] Implementasi CRUD supplier
@@ -74,7 +75,7 @@ Project saat ini berada di **Phase 7: Transaksi POS dan Riwayat Penjualan**. Pha
 - [x] Implementasi CRUD pelanggan
 - [x] Implementasi transaksi penjualan
 - [x] Implementasi Redis caching (dashboard + produk)
-- [x] Implementasi endpoint dashboard summary
+- [x] Implementasi endpoint dashboard admin/owner dan kasir
 
 ### Frontend
 
@@ -85,13 +86,14 @@ Project saat ini berada di **Phase 7: Transaksi POS dan Riwayat Penjualan**. Pha
 - [x] Implementasi API service modules (7 modul)
 - [x] Implementasi Redux store dan slices
 - [x] Implementasi layout dan routing
+- [x] Implementasi route, menu, dan mode read-only berbasis role
 - [x] Implementasi halaman login
-- [x] Implementasi halaman dashboard
+- [x] Implementasi dashboard manajemen dan dashboard operasional kasir
 - [x] Integrasi awal frontend-backend (login + dashboard)
 - [x] Implementasi halaman CRUD (produk, kategori, supplier, pelanggan)
-- [ ] Implementasi halaman transaksi POS
+- [x] Implementasi halaman transaksi POS
 - [x] Integrasi frontend-backend modul produk, kategori, supplier, dan pelanggan
-- [ ] Integrasi frontend-backend modul transaksi
+- [x] Integrasi frontend-backend modul transaksi
 - [x] Perbaikan build dan lint frontend
 
 ### Dokumentasi & Lainnya
@@ -102,16 +104,20 @@ Project saat ini berada di **Phase 7: Transaksi POS dan Riwayat Penjualan**. Pha
 - [x] Membuat draft desain database
 - [x] Membuat ERD final
 - [x] Testing backend automated
+- [x] Validasi build dan lint frontend
+- [x] Smoke test API dan Redis
+- [x] Audit dependency production
 - [ ] Finalisasi laporan (BAB IV, VI, VII, VIII)
 - [ ] Slide presentasi
 - [ ] Video demo
-- [ ] Testing frontend final
 - [ ] Testing end-to-end/manual flow
 
 ### Status Validasi
 
-- Backend: `npm test` berhasil dengan 7 file test dan 23 test passed.
-- Frontend: `npm run build` dan `npm run lint` berhasil. Halaman login, dashboard, serta CRUD kategori, supplier, pelanggan, dan produk sudah tersedia.
+- Backend: `npm test` berhasil dengan 8 file test dan 33 test passed.
+- Frontend: `npm run build` dan `npm run lint` berhasil. Halaman login, dashboard, CRUD data, transaksi POS, riwayat penjualan, dan detail invoice sudah tersedia.
+- Integrasi: login dan dashboard untuk role admin, kasir, dan owner, endpoint pelanggan, serta invalidasi cache Redis berhasil diuji.
+- Keamanan dependency: `npm audit --omit=dev` pada backend dan frontend tidak menemukan kerentanan.
 
 ## Branch Workflow
 
@@ -139,7 +145,8 @@ Project saat ini berada di **Phase 7: Transaksi POS dan Riwayat Penjualan**. Pha
 | `feature/auth-page` | Merged |
 | `feature/dashboard-page` | Merged |
 | `feature/crud-pages` | Implemented |
-| `feature/sales-pages` | Next |
+| `feature/sales-pages` | In Progress |
+| `feature/rbac` | In Progress |
 
 ## Cara Menjalankan
 

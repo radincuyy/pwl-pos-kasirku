@@ -24,10 +24,12 @@ export type SidebarNavigationItem = NavItem & {
 export type SidebarUser = {
   name: string
   email: string
+  roleLabel: string
   avatar: string
 }
 
 type AppSidebarProps = ComponentProps<typeof Sidebar> & {
+  homeUrl: string
   items: SidebarNavigationItem[]
   loggingOut: boolean
   onLogout: () => Promise<void>
@@ -35,6 +37,7 @@ type AppSidebarProps = ComponentProps<typeof Sidebar> & {
 }
 
 export function AppSidebar({
+  homeUrl,
   items,
   loggingOut,
   onLogout,
@@ -50,7 +53,7 @@ export function AppSidebar({
               asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
-              <Link to="/">
+              <Link to={homeUrl}>
                 <CommandIcon className="size-5!" />
                 <span className="text-base font-semibold">KasirKu</span>
               </Link>
