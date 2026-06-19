@@ -1,8 +1,5 @@
--- Initial database schema draft for KasirKu Web
--- Database: pwl_pos
-
-CREATE DATABASE IF NOT EXISTS pwl_pos;
-USE pwl_pos;
+-- KasirKu Web database schema
+-- Run this file against an existing, selected MySQL database.
 
 CREATE TABLE roles (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

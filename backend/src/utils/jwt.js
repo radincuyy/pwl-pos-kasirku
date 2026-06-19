@@ -1,17 +1,15 @@
 const jwt = require('jsonwebtoken');
 
-function getJwtSecret() {
-  return process.env.JWT_SECRET || 'change_this_local_development_secret';
-}
+const { environment } = require('../config/environment');
 
 function signToken(payload) {
-  return jwt.sign(payload, getJwtSecret(), {
-    expiresIn: process.env.JWT_EXPIRES_IN || '1d'
+  return jwt.sign(payload, environment.jwt.secret, {
+    expiresIn: environment.jwt.expiresIn
   });
 }
 
 function verifyToken(token) {
-  return jwt.verify(token, getJwtSecret());
+  return jwt.verify(token, environment.jwt.secret);
 }
 
 module.exports = {

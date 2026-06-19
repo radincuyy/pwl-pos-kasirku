@@ -6,7 +6,11 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "vitest run --globals"
+    "test": "vitest run --globals",
+    "create:admin": "node scripts/createAdmin.js"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "keywords": [
     "express",
@@ -22,6 +26,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.5.2",
+    "helmet": "^8.2.0",
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.22.5",
     "redis": "^6.0.0"
