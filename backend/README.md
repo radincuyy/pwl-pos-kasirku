@@ -114,7 +114,7 @@ Total: 30 endpoint.
 Base URL local:
 
 ```text
-http://localhost:5001
+http://localhost:5000
 ```
 
 Response sukses:

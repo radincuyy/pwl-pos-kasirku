@@ -70,7 +70,7 @@ function readFrontendOrigins() {
 const environment = Object.freeze({
   nodeEnv: readString('NODE_ENV', 'development'),
   host: readString('HOST', '0.0.0.0'),
-  port: readPositiveInteger('PORT', 5001),
+  port: readPositiveInteger('PORT', 5000),
   appName: readString('APP_NAME', 'KasirKu API'),
   frontendOrigins: readFrontendOrigins(),
   trustProxy: readTrustProxy(),

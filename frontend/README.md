@@ -64,7 +64,7 @@ Setiap service module terhubung ke backend REST API melalui Axios instance denga
 Buat file `.env` di folder frontend:
 
 ```text
-VITE_API_URL=http://localhost:5001/api
+VITE_API_URL=http://localhost:5000/api
 ```
 
 Untuk deployment terpisah, isi `VITE_API_URL` dengan URL HTTPS backend sebelum
