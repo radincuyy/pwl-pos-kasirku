@@ -15,11 +15,12 @@ Server backend membutuhkan MySQL sesuai konfigurasi `.env`. Redis dipakai untuk 
 
 ## Setup Database
 
-Jalankan schema dan seed awal pada MySQL lokal:
+Siapkan database lokal, lalu jalankan schema dan seed awal:
 
 ```bash
-mysql -u root -p < ../database/schema.sql
-mysql -u root -p < ../database/seed.sql
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS pwl_pos"
+mysql -u root -p pwl_pos < ../database/schema.sql
+mysql -u root -p pwl_pos < ../database/seed.sql
 ```
 
 Seed awal membuat data pengujian berupa 3 akun, 5 kategori, 4 supplier,
@@ -77,6 +78,7 @@ npm test        # menjalankan automated test
 
 ```text
 GET    /api/health
+GET    /api/health/ready
 POST   /api/auth/login
 GET    /api/auth/me
 POST   /api/auth/logout
@@ -107,7 +109,7 @@ POST   /api/sales
 GET    /api/sales/:id
 ```
 
-Total: 29 endpoint.
+Total: 30 endpoint.
 
 Base URL local:
 
@@ -127,3 +129,8 @@ Response sukses:
   }
 }
 ```
+
+## Deployment
+
+Panduan environment production, MySQL cloud, health check, dan pembuatan admin
+tersedia di [`docs/deployment.md`](../docs/deployment.md).

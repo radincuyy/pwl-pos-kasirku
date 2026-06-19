@@ -107,6 +107,8 @@ Project saat ini berada di **Phase 8: Pengujian Akhir dan Stabilisasi**. Seluruh
 - [x] Validasi build dan lint frontend
 - [x] Smoke test API dan Redis
 - [x] Audit dependency production
+- [x] Deployment hardening dan konfigurasi SPA
+- [ ] Deploy staging
 - [ ] Finalisasi laporan (BAB IV, VI, VII, VIII)
 - [ ] Slide presentasi
 - [ ] Video demo
@@ -145,8 +147,8 @@ Project saat ini berada di **Phase 8: Pengujian Akhir dan Stabilisasi**. Seluruh
 | `feature/auth-page` | Merged |
 | `feature/dashboard-page` | Merged |
 | `feature/crud-pages` | Implemented |
-| `feature/sales-pages` | In Progress |
-| `feature/rbac` | In Progress |
+| `feature/sales-pages` | Merged |
+| `feature/rbac` | Merged |
 
 ## Cara Menjalankan
 
@@ -171,10 +173,13 @@ npm run dev
 ### Database
 
 ```bash
-mysql -u root -p < database/schema.sql
-mysql -u root -p < database/seed.sql
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS pwl_pos"
+mysql -u root -p pwl_pos < database/schema.sql
+mysql -u root -p pwl_pos < database/seed.sql
 ```
 
 ## Catatan
 
 Project ini dikembangkan bertahap agar setiap perubahan mudah ditinjau dan diuji.
+Panduan deployment production tersedia di
+[`docs/deployment.md`](docs/deployment.md).
