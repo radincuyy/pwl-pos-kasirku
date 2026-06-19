@@ -4,7 +4,7 @@ Aplikasi web Point of Sales untuk mengelola produk, stok, pelanggan, dan transak
 
 ## Studi Kasus
 
-KasirKu Web membantu operasional toko atau usaha retail melalui pengelolaan produk, kategori, supplier, pelanggan, transaksi penjualan, stok, dan dashboard ringkasan bisnis.
+KasirKu Web membantu operasional toko atau usaha retail melalui pengelolaan produk, kategori, supplier, pelanggan opsional, transaksi penjualan, stok, dan dashboard ringkasan bisnis.
 
 ## Tech Stack
 
@@ -60,7 +60,7 @@ pwl-pos-kasirku/
 
 ### Fase Saat Ini
 
-Project saat ini berada di **Phase 8: Pengujian Akhir dan Stabilisasi**. Fitur transaksi POS, riwayat penjualan, serta pembatasan akses berdasarkan role sudah diimplementasikan. Role owner dapat melihat dashboard dan data operasional dalam mode read-only. Pengerjaan berikutnya berfokus pada pengujian end-to-end seluruh alur dan perbaikan temuan.
+Project saat ini berada di **Phase 8: Pengujian Akhir dan Stabilisasi**. Seluruh fitur inti sudah diimplementasikan dan lolos validasi otomatis, smoke test API, serta pengujian koneksi Redis. Pekerjaan teknis yang tersisa adalah pengujian end-to-end secara manual pada browser untuk setiap role dan perbaikan jika ditemukan masalah.
 
 ### Backend
 
@@ -75,7 +75,7 @@ Project saat ini berada di **Phase 8: Pengujian Akhir dan Stabilisasi**. Fitur t
 - [x] Implementasi CRUD pelanggan
 - [x] Implementasi transaksi penjualan
 - [x] Implementasi Redis caching (dashboard + produk)
-- [x] Implementasi endpoint dashboard summary
+- [x] Implementasi endpoint dashboard admin/owner dan kasir
 
 ### Frontend
 
@@ -88,7 +88,7 @@ Project saat ini berada di **Phase 8: Pengujian Akhir dan Stabilisasi**. Fitur t
 - [x] Implementasi layout dan routing
 - [x] Implementasi route, menu, dan mode read-only berbasis role
 - [x] Implementasi halaman login
-- [x] Implementasi halaman dashboard
+- [x] Implementasi dashboard manajemen dan dashboard operasional kasir
 - [x] Integrasi awal frontend-backend (login + dashboard)
 - [x] Implementasi halaman CRUD (produk, kategori, supplier, pelanggan)
 - [x] Implementasi halaman transaksi POS
@@ -104,16 +104,20 @@ Project saat ini berada di **Phase 8: Pengujian Akhir dan Stabilisasi**. Fitur t
 - [x] Membuat draft desain database
 - [x] Membuat ERD final
 - [x] Testing backend automated
+- [x] Validasi build dan lint frontend
+- [x] Smoke test API dan Redis
+- [x] Audit dependency production
 - [ ] Finalisasi laporan (BAB IV, VI, VII, VIII)
 - [ ] Slide presentasi
 - [ ] Video demo
-- [ ] Testing frontend final
 - [ ] Testing end-to-end/manual flow
 
 ### Status Validasi
 
-- Backend: `npm test` berhasil dengan 8 file test dan 30 test passed.
+- Backend: `npm test` berhasil dengan 8 file test dan 33 test passed.
 - Frontend: `npm run build` dan `npm run lint` berhasil. Halaman login, dashboard, CRUD data, transaksi POS, riwayat penjualan, dan detail invoice sudah tersedia.
+- Integrasi: login dan dashboard untuk role admin, kasir, dan owner, endpoint pelanggan, serta invalidasi cache Redis berhasil diuji.
+- Keamanan dependency: `npm audit --omit=dev` pada backend dan frontend tidak menemukan kerentanan.
 
 ## Branch Workflow
 

@@ -24,7 +24,8 @@ http://localhost:5001/api
 
 | Endpoint | Admin | Kasir | Owner |
 |---|---|---|---|
-| `/dashboard/*` | Read | - | Read |
+| `/dashboard/summary` | Read | - | Read |
+| `/dashboard/cashier-summary` | - | Read own | - |
 | `GET /categories/*` | Read | - | Read |
 | `POST/PUT/DELETE /categories/*` | Write | - | - |
 | `GET /suppliers/*` | Read | - | Read |
@@ -43,6 +44,7 @@ Endpoint protected mengembalikan `401` jika token tidak valid dan `403` jika rol
 | Method | Endpoint | Deskripsi | Auth | Cache |
 |---|---|---|---|---|
 | GET | `/dashboard/summary` | Ringkasan total produk, transaksi, pendapatan, stok rendah | Yes | Redis |
+| GET | `/dashboard/cashier-summary` | Ringkasan transaksi hari ini dan transaksi terakhir milik kasir login | Yes | - |
 
 ## Products
 
@@ -92,4 +94,4 @@ Endpoint protected mengembalikan `401` jika token tidak valid dan `403` jika rol
 | POST | `/sales` | Membuat transaksi penjualan | Yes |
 | GET | `/sales/:id` | Detail transaksi | Yes |
 
-Total endpoint awal: 28 endpoint.
+Total endpoint: 29 endpoint.

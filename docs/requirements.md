@@ -2,7 +2,7 @@
 
 ## Deskripsi Singkat
 
-KasirKu Web adalah aplikasi Point of Sales berbasis web untuk membantu admin/kasir mengelola data produk, kategori, supplier, pelanggan, stok barang, dan transaksi penjualan.
+KasirKu Web adalah aplikasi Point of Sales berbasis web untuk membantu admin/kasir mengelola data produk, kategori, supplier, pelanggan opsional, stok barang, dan transaksi penjualan.
 
 ## Aktor
 
@@ -20,7 +20,7 @@ KasirKu Web adalah aplikasi Point of Sales berbasis web untuk membantu admin/kas
 4. Admin dapat mengelola data kategori produk.
 5. Admin dapat mengelola data supplier.
 6. Admin dapat mengelola data produk.
-7. Admin/kasir dapat mengelola data pelanggan.
+7. Admin/kasir dapat mengelola data pelanggan opsional.
 8. Kasir dapat membuat transaksi penjualan.
 9. Sistem dapat menyimpan detail item transaksi.
 10. Sistem dapat mengurangi stok produk setelah transaksi berhasil.
