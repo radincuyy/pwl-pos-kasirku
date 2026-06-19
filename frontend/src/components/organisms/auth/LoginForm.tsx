@@ -3,7 +3,6 @@ import { Button } from "@/components/atoms/ui/button"
 import { Card, CardContent } from "@/components/atoms/ui/card"
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -124,15 +123,7 @@ export function LoginForm({
               </Field>
 
               <Field data-invalid={Boolean(errors.password)}>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#forgot-password"
-                    className="ml-auto text-sm underline-offset-2 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
+                <FieldLabel htmlFor="password">Password</FieldLabel>
                 <Input
                   id="password"
                   name="password"
@@ -155,10 +146,6 @@ export function LoginForm({
                   {loading ? "Loading..." : "Login"}
                 </Button>
               </Field>
-
-              <FieldDescription className="text-center">
-                Don&apos;t have an account? <a href="#signup">Sign up</a>
-              </FieldDescription>
             </FieldGroup>
           </form>
 
