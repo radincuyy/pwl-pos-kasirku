@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type FormEvent } from "react"
 import { PencilIcon, Trash2Icon } from "lucide-react"
 import type { Product, ProductPayload } from "@/api/productService"
 import { DeleteConfirmDialog } from "@/components/molecules/DeleteConfirmDialog"
+import { ProductThumbnail } from "@/components/molecules/products/ProductThumbnail"
 import { ManagementPageLayout } from "@/components/templates/ManagementPageLayout"
 import { Badge } from "@/components/atoms/ui/badge"
 import { Button } from "@/components/atoms/ui/button"
@@ -46,6 +47,7 @@ type ProductForm = {
   supplierId: string
   sku: string
   name: string
+  imageUrl: string
   purchasePrice: string
   sellingPrice: string
   stock: string
@@ -57,6 +59,7 @@ const emptyForm: ProductForm = {
   supplierId: "",
   sku: "",
   name: "",
+  imageUrl: "",
   purchasePrice: "0",
   sellingPrice: "0",
   stock: "0",
@@ -77,6 +80,7 @@ function toProductForm(product: Product): ProductForm {
     supplierId: product.supplierId.toString(),
     sku: product.sku,
     name: product.name,
+    imageUrl: product.imageUrl ?? "",
     purchasePrice: product.purchasePrice.toString(),
     sellingPrice: product.sellingPrice.toString(),
     stock: product.stock.toString(),
@@ -183,6 +187,7 @@ export default function ProductsPage() {
       supplier_id: supplierId,
       sku: form.sku.trim(),
       name: form.name.trim(),
+      image_url: form.imageUrl.trim() || null,
       purchase_price: purchasePrice,
       selling_price: sellingPrice,
       stock,
@@ -275,8 +280,17 @@ export default function ProductsPage() {
                 return (
                   <TableRow key={product.id}>
                     <TableCell>
-                      <p className="font-medium">{product.name}</p>
-                      <p className="text-xs text-muted-foreground">{product.sku}</p>
+                      <div className="flex items-center gap-3">
+                        <ProductThumbnail
+                          src={product.imageUrl}
+                          alt={`Gambar ${product.name}`}
+                          size="small"
+                        />
+                        <div className="min-w-0">
+                          <p className="truncate font-medium">{product.name}</p>
+                          <p className="text-xs text-muted-foreground">{product.sku}</p>
+                        </div>
+                      </div>
                     </TableCell>
                     <TableCell>{product.category.name}</TableCell>
                     <TableCell>{product.supplier.name}</TableCell>
@@ -346,6 +360,16 @@ export default function ProductsPage() {
                       id="product-name"
                       value={form.name}
                       onChange={(event) => setField("name", event.target.value)}
+                    />
+                  </div>
+                  <div className="grid gap-2 sm:col-span-2">
+                    <Label htmlFor="product-image-url">URL gambar</Label>
+                    <Input
+                      id="product-image-url"
+                      type="url"
+                      value={form.imageUrl}
+                      placeholder="https://contoh.com/gambar-produk.jpg"
+                      onChange={(event) => setField("imageUrl", event.target.value)}
                     />
                   </div>
                   <div className="grid gap-2">

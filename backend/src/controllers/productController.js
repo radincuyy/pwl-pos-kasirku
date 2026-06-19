@@ -1,6 +1,11 @@
 const { pool } = require('../config/database');
 const createHttpError = require('../utils/createHttpError');
-const { cacheKeys, clearProductsCache, getCache, setCache } = require('../utils/cache');
+const {
+  cacheKeys,
+  clearProductDataCache,
+  getCache,
+  setCache
+} = require('../utils/cache');
 
 function toProductResponse(product) {
   return {
@@ -17,6 +22,7 @@ function toProductResponse(product) {
     },
     sku: product.sku,
     name: product.name,
+    imageUrl: product.image_url,
     purchasePrice: Number(product.purchase_price),
     sellingPrice: Number(product.selling_price),
     stock: Number(product.stock),
@@ -66,12 +72,39 @@ function normalizeStock(value, errorMessage) {
   return normalizedValue;
 }
 
+function normalizeOptionalImageUrl(value) {
+  const normalizedValue = typeof value === 'string' ? value.trim() : '';
+
+  if (!normalizedValue) {
+    return null;
+  }
+
+  if (normalizedValue.length > 2048) {
+    throw createHttpError(400, 'URL gambar produk terlalu panjang');
+  }
+
+  let parsedUrl;
+
+  try {
+    parsedUrl = new URL(normalizedValue);
+  } catch {
+    throw createHttpError(400, 'URL gambar produk tidak valid');
+  }
+
+  if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+    throw createHttpError(400, 'URL gambar produk harus menggunakan HTTP atau HTTPS');
+  }
+
+  return parsedUrl.toString();
+}
+
 function normalizeProductPayload(body) {
   const {
     category_id: categoryId,
     supplier_id: supplierId,
     sku,
     name,
+    image_url: imageUrl,
     purchase_price: purchasePrice,
     selling_price: sellingPrice,
     stock,
@@ -83,6 +116,7 @@ function normalizeProductPayload(body) {
     supplierId: normalizeRequiredId(supplierId, 'Supplier produk wajib dipilih'),
     sku: normalizeRequiredText(sku, 'SKU produk wajib diisi'),
     name: normalizeRequiredText(name, 'Nama produk wajib diisi'),
+    imageUrl: normalizeOptionalImageUrl(imageUrl),
     purchasePrice: normalizeMoney(purchasePrice, 'Harga beli tidak valid'),
     sellingPrice: normalizeMoney(sellingPrice, 'Harga jual tidak valid'),
     stock: normalizeStock(stock, 'Stok tidak valid'),
@@ -120,7 +154,7 @@ async function ensureProductRelations(payload) {
 async function findProductById(id) {
   const [rows] = await pool.execute(
     `SELECT products.id, products.category_id, products.supplier_id, products.sku,
-            products.name, products.purchase_price, products.selling_price,
+            products.name, products.image_url, products.purchase_price, products.selling_price,
             products.stock, products.minimum_stock, products.created_at,
             products.updated_at, categories.name AS category_name,
             suppliers.name AS supplier_name
@@ -150,7 +184,7 @@ async function getProducts(req, res) {
 
   const [rows] = await pool.execute(
     `SELECT products.id, products.category_id, products.supplier_id, products.sku,
-            products.name, products.purchase_price, products.selling_price,
+            products.name, products.image_url, products.purchase_price, products.selling_price,
             products.stock, products.minimum_stock, products.created_at,
             products.updated_at, categories.name AS category_name,
             suppliers.name AS supplier_name
@@ -192,24 +226,25 @@ async function getProductById(req, res) {
 async function createProduct(req, res) {
   const payload = normalizeProductPayload(req.body);
   await ensureProductRelations(payload);
-  await clearProductsCache();
 
   try {
     const [result] = await pool.execute(
       `INSERT INTO products
-       (category_id, supplier_id, sku, name, purchase_price, selling_price, stock, minimum_stock)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+       (category_id, supplier_id, sku, name, image_url, purchase_price, selling_price, stock, minimum_stock)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         payload.categoryId,
         payload.supplierId,
         payload.sku,
         payload.name,
+        payload.imageUrl,
         payload.purchasePrice,
         payload.sellingPrice,
         payload.stock,
         payload.minimumStock
       ]
     );
+    await clearProductDataCache();
     const product = await findProductById(result.insertId);
 
     return res.status(201).json({
@@ -237,19 +272,19 @@ async function updateProduct(req, res) {
   }
 
   await ensureProductRelations(payload);
-  await clearProductsCache();
 
   try {
     await pool.execute(
       `UPDATE products
        SET category_id = ?, supplier_id = ?, sku = ?, name = ?,
-           purchase_price = ?, selling_price = ?, stock = ?, minimum_stock = ?
+           image_url = ?, purchase_price = ?, selling_price = ?, stock = ?, minimum_stock = ?
        WHERE id = ?`,
       [
         payload.categoryId,
         payload.supplierId,
         payload.sku,
         payload.name,
+        payload.imageUrl,
         payload.purchasePrice,
         payload.sellingPrice,
         payload.stock,
@@ -257,6 +292,7 @@ async function updateProduct(req, res) {
         req.params.id
       ]
     );
+    await clearProductDataCache();
     const product = await findProductById(req.params.id);
 
     return res.status(200).json({
@@ -282,8 +318,6 @@ async function deleteProduct(req, res) {
     throw createHttpError(404, 'Produk tidak ditemukan');
   }
 
-  await clearProductsCache();
-
   try {
     await pool.execute('DELETE FROM products WHERE id = ?', [req.params.id]);
   } catch (error) {
@@ -293,6 +327,7 @@ async function deleteProduct(req, res) {
 
     throw error;
   }
+  await clearProductDataCache();
 
   return res.status(200).json({
     success: true,

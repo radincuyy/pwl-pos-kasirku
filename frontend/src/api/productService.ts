@@ -8,6 +8,7 @@ export interface Product {
   supplier: { id: number; name: string };
   sku: string;
   name: string;
+  imageUrl: string | null;
   purchasePrice: number;
   sellingPrice: number;
   stock: number;
@@ -21,6 +22,7 @@ export interface ProductPayload {
   supplier_id: number;
   sku: string;
   name: string;
+  image_url: string | null;
   purchase_price: number;
   selling_price: number;
   stock: number;

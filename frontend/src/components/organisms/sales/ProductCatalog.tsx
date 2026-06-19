@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/atoms/ui/card"
 import { Input } from "@/components/atoms/ui/input"
+import { ProductThumbnail } from "@/components/molecules/products/ProductThumbnail"
 import { formatCurrency } from "@/lib/format"
 
 type ProductCatalogProps = {
@@ -74,8 +75,13 @@ export function ProductCatalog({
             const outOfStock = availableStock <= 0
 
             return (
-              <Card key={product.id} size="sm" className="min-h-40">
-                <CardHeader>
+              <Card key={product.id} size="sm" className="gap-0 py-0">
+                <ProductThumbnail
+                  src={product.imageUrl}
+                  alt={`Gambar ${product.name}`}
+                  size="catalog"
+                />
+                <CardHeader className="pt-3">
                   <div className="min-w-0">
                     <CardTitle className="line-clamp-2">{product.name}</CardTitle>
                     <CardDescription className="mt-1">
@@ -88,7 +94,7 @@ export function ProductCatalog({
                     </Badge>
                   </CardAction>
                 </CardHeader>
-                <CardContent className="mt-auto flex items-end justify-between gap-3">
+                <CardContent className="mt-auto flex items-end justify-between gap-3 py-3">
                   <p className="font-semibold tabular-nums">
                     {formatCurrency(product.sellingPrice)}
                   </p>

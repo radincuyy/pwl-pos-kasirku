@@ -77,4 +77,27 @@ describe('Product API', () => {
       message: 'Stok tidak valid'
     });
   });
+
+  it('returns validation error when product image URL is invalid on create', async () => {
+    const response = await request(app)
+      .post('/api/products')
+      .set('Authorization', `Bearer ${createTestToken()}`)
+      .send({
+        category_id: 1,
+        supplier_id: 1,
+        sku: 'SKU-001',
+        name: 'Produk Test',
+        image_url: 'gambar-produk',
+        purchase_price: 1000,
+        selling_price: 1500,
+        stock: 10,
+        minimum_stock: 2
+      })
+      .expect(400);
+
+    expect(response.body).toMatchObject({
+      success: false,
+      message: 'URL gambar produk tidak valid'
+    });
+  });
 });
