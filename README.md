@@ -1,176 +1,141 @@
-# KasirKu Web - Sistem Point of Sales
+# KasirKu Web
 
-Aplikasi web Point of Sales untuk mengelola produk, stok, pelanggan, dan transaksi penjualan.
+KasirKu Web adalah aplikasi Point of Sale berbasis web untuk membantu
+operasional toko retail. Sistem mencakup pengelolaan produk dan mitra,
+transaksi penjualan, pemantauan stok, dashboard analitik, serta pencetakan
+struk.
 
-## Studi Kasus
+Frontend dan backend dikembangkan sebagai aplikasi terpisah yang berkomunikasi
+melalui REST API. Akses fitur dibatasi berdasarkan peran admin, kasir, dan
+owner.
 
-KasirKu Web membantu operasional toko atau usaha retail melalui pengelolaan produk, kategori, supplier, pelanggan opsional, transaksi penjualan, stok, dan dashboard ringkasan bisnis.
+## Fitur Utama
 
-## Tech Stack
+- Authentication menggunakan JWT dan password hash bcrypt.
+- Role-Based Access Control untuk admin, kasir, dan owner.
+- Dashboard manajemen dan dashboard operasional kasir.
+- Pengelolaan kategori, supplier, produk, dan pelanggan.
+- Katalog produk dengan gambar, pencarian, harga, dan informasi stok.
+- Transaksi penjualan dengan pelanggan opsional.
+- Pembayaran tunai, transfer, QRIS, dan debit.
+- Validasi stok, perhitungan total, pembayaran, dan kembalian.
+- Riwayat penjualan, detail invoice, dan pencetakan struk.
+- Grafik tren penjualan dalam rentang 7, 30, dan 90 hari.
+- Redis caching untuk daftar produk dan ringkasan dashboard.
+- Tema terang, gelap, dan mengikuti pengaturan perangkat.
+- Antarmuka responsif untuk desktop dan perangkat dengan layar kecil.
 
-- Frontend: ReactJS + Vite + TypeScript
-- UI Components: shadcn/ui (Radix + Nova)
-- Styling: Tailwind CSS v4
-- State Management: Redux Toolkit
-- API Client: Axios
-- Backend: NodeJS Express
-- Database: MySQL
-- Caching: Redis
-- Authentication: JWT + bcrypt + Role-Based Access Control
-- Version Control: Git + GitHub
+## Hak Akses
 
-## Arsitektur Singkat
+| Modul | Admin | Kasir | Owner |
+|---|:---:|:---:|:---:|
+| Dashboard | Seluruh toko | Aktivitas sendiri | Seluruh toko |
+| Kategori | Kelola | - | Lihat |
+| Supplier | Kelola | - | Lihat |
+| Produk | Kelola | Lihat melalui POS | Lihat |
+| Pelanggan | Kelola | Kelola | Lihat |
+| Transaksi baru | Buat | Buat | - |
+| Riwayat penjualan | Lihat | Lihat | Lihat |
+
+Backend tetap memverifikasi role pada setiap endpoint protected. Pembatasan menu
+dan route pada frontend hanya menjadi lapisan pendukung pengalaman pengguna.
+
+## Arsitektur
 
 ```text
-React Frontend -> Axios -> Express REST API -> MySQL
-                                  |
-                                  -> Redis Cache
+Browser
+  |
+  v
+React + TypeScript
+  |
+  | HTTPS / Axios / JSON / JWT
+  v
+Node.js + Express REST API
+  |                         |
+  | SQL                     | Cache
+  v                         v
+MySQL                     Redis
 ```
 
-## Struktur Project
+MySQL menjadi sumber data utama. Redis hanya digunakan sebagai cache sehingga
+API tetap dapat berjalan langsung melalui MySQL ketika Redis tidak tersedia.
+
+## Teknologi
+
+### Frontend
+
+- React 19 dan TypeScript
+- Vite 8
+- Tailwind CSS 4
+- shadcn/ui dan Radix UI
+- Redux Toolkit
+- React Router
+- Axios
+- Recharts
+
+### Backend
+
+- Node.js 20+
+- Express 5
+- MySQL2
+- Redis
+- JSON Web Token
+- bcryptjs
+- Helmet
+- express-rate-limit
+- Vitest dan Supertest
+
+## Struktur Repository
 
 ```text
 pwl-pos-kasirku/
-|-- frontend/          # React + Vite + TypeScript
+|-- backend/
+|   |-- scripts/              # Script administrasi production
 |   |-- src/
-|   |   |-- app/       # Root aplikasi dan route guard
-|   |   |-- api/       # Axios instance + service modules
-|   |   |-- components/# Atomic Design components
-|   |   |   |-- atoms/      # Primitive shadcn/ui
-|   |   |   |-- molecules/  # Komponen interaksi kecil
-|   |   |   |-- organisms/  # Form, navigasi, dan bagian fitur
-|   |   |   `-- templates/  # Layout halaman
-|   |   |-- hooks/     # Custom hooks
-|   |   |-- lib/       # Utility functions
-|   |   |-- pages/     # Halaman aplikasi
-|   |   `-- store/     # Redux store dan slices
-|   `-- public/
-|-- backend/           # NodeJS Express REST API
-|   `-- src/
-|       |-- controllers/
-|       |-- routes/
-|       |-- middlewares/
-|       |-- config/
-|       `-- utils/
-|-- database/          # Schema SQL + Seed data
-`-- docs/              # Dokumentasi teknis
+|   |   |-- config/           # Environment, MySQL, dan Redis
+|   |   |-- controllers/      # Business logic
+|   |   |-- middlewares/      # Auth, role, error, dan rate limit
+|   |   |-- routes/           # REST API routes
+|   |   `-- utils/            # JWT, cache, dan helper
+|   `-- tests/                # Integration tests API
+|-- database/
+|   |-- schema.sql            # Struktur database
+|   `-- seed.sql              # Data pengembangan
+|-- docs/
+|   |-- api-design.md
+|   |-- database-design.md
+|   |-- deployment.md
+|   `-- requirements.md
+`-- frontend/
+    |-- public/
+    `-- src/
+        |-- api/              # Axios instance dan service
+        |-- app/              # Routing dan route guard
+        |-- components/       # Atomic Design components
+        |-- pages/            # Halaman aplikasi
+        |-- store/            # Redux store dan slices
+        `-- lib/              # Utility dan access control
 ```
 
-## Status Progress
+## Persyaratan
 
-### Fase Saat Ini
+- Node.js 20 atau lebih baru
+- npm
+- MySQL 8 atau versi kompatibel
+- Redis lokal atau Redis Cloud, opsional untuk pengembangan
 
-Project saat ini berada di **Phase 8: Pengujian Akhir dan Stabilisasi**. Seluruh fitur inti sudah diimplementasikan dan lolos validasi otomatis, smoke test API, serta pengujian koneksi Redis. Pekerjaan teknis yang tersisa adalah pengujian end-to-end secara manual pada browser untuk setiap role dan perbaikan jika ditemukan masalah.
+## Menjalankan Secara Lokal
 
-### Backend
-
-- [x] Setup backend Express
-- [x] Setup koneksi database MySQL
-- [x] Implementasi authentication (JWT + bcrypt)
-- [x] Implementasi otorisasi berbasis role (admin, kasir, owner)
-- [x] Validasi schema dan seed di MySQL lokal
-- [x] Implementasi CRUD kategori
-- [x] Implementasi CRUD supplier
-- [x] Implementasi CRUD produk
-- [x] Implementasi CRUD pelanggan
-- [x] Implementasi transaksi penjualan
-- [x] Implementasi Redis caching (dashboard + produk)
-- [x] Implementasi endpoint dashboard admin/owner dan kasir
-
-### Frontend
-
-- [x] Setup frontend React + Vite + TypeScript
-- [x] Integrasi Tailwind CSS v4
-- [x] Integrasi shadcn/ui (17 komponen)
-- [x] Setup Axios instance dan interceptors
-- [x] Implementasi API service modules (7 modul)
-- [x] Implementasi Redux store dan slices
-- [x] Implementasi layout dan routing
-- [x] Implementasi route, menu, dan mode read-only berbasis role
-- [x] Implementasi halaman login
-- [x] Implementasi dashboard manajemen dan dashboard operasional kasir
-- [x] Integrasi awal frontend-backend (login + dashboard)
-- [x] Implementasi halaman CRUD (produk, kategori, supplier, pelanggan)
-- [x] Implementasi halaman transaksi POS
-- [x] Integrasi frontend-backend modul produk, kategori, supplier, dan pelanggan
-- [x] Integrasi frontend-backend modul transaksi
-- [x] Perbaikan build dan lint frontend
-
-### Dokumentasi & Lainnya
-
-- [x] Menentukan studi kasus: Sistem Point of Sales
-- [x] Membuat repository awal
-- [x] Menyiapkan dokumen requirement awal
-- [x] Membuat draft desain database
-- [x] Membuat ERD final
-- [x] Testing backend automated
-- [x] Validasi build dan lint frontend
-- [x] Smoke test API dan Redis
-- [x] Audit dependency production
-- [x] Deployment hardening dan konfigurasi SPA
-- [ ] Deploy staging
-- [ ] Finalisasi laporan (BAB IV, VI, VII, VIII)
-- [ ] Slide presentasi
-- [ ] Video demo
-- [ ] Testing end-to-end/manual flow
-
-### Status Validasi
-
-- Backend: `npm test` berhasil dengan 8 file test dan 33 test passed.
-- Frontend: `npm run build` dan `npm run lint` berhasil. Halaman login, dashboard, CRUD data, transaksi POS, riwayat penjualan, dan detail invoice sudah tersedia.
-- Integrasi: login dan dashboard untuk role admin, kasir, dan owner, endpoint pelanggan, serta invalidasi cache Redis berhasil diuji.
-- Keamanan dependency: `npm audit --omit=dev` pada backend dan frontend tidak menemukan kerentanan.
-
-## Branch Workflow
-
-- `main`: branch stabil untuk submission/release
-- `develop`: branch utama pengembangan bertahap
-- `feature/*`: branch fitur yang di-merge ke develop
-
-### Riwayat Branch
-
-| Branch | Status |
-|---|---|
-| `feature-backend-auth` | Merged |
-| `feature-backend-categories` | Merged |
-| `feature-backend-suppliers` | Merged |
-| `feature-backend-products` | Merged |
-| `feature-backend-customers` | Merged |
-| `feature-backend-sales` | Merged |
-| `feature-backend-redis-cache` | Merged |
-| `feature/frontend-setup` | Merged |
-| `feature/api-layer` | Merged |
-| `feature/redux-store` | Merged |
-| `feature/redux-slices` | Merged |
-| `feature/layout-dashboard-sidebar` | Merged |
-| `feature/protected-route-konfigurasi-routing` | Merged |
-| `feature/auth-page` | Merged |
-| `feature/dashboard-page` | Merged |
-| `feature/crud-pages` | Implemented |
-| `feature/sales-pages` | Merged |
-| `feature/rbac` | Merged |
-
-## Cara Menjalankan
-
-### Backend
+### 1. Clone Repository
 
 ```bash
-cd backend
-npm install
-cp .env.example .env
-# Sesuaikan .env dengan konfigurasi MySQL dan Redis
-npm run dev
+git clone https://github.com/radincuyy/pwl-pos-kasirku.git
+cd pwl-pos-kasirku
 ```
 
-### Frontend
+### 2. Siapkan Database
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-### Database
+Buat database `pwl_pos`, kemudian jalankan schema dan seed:
 
 ```bash
 mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS pwl_pos"
@@ -178,8 +143,143 @@ mysql -u root -p pwl_pos < database/schema.sql
 mysql -u root -p pwl_pos < database/seed.sql
 ```
 
-## Catatan
+File seed menyediakan data pengembangan berupa tiga role, tiga akun, kategori,
+supplier, pelanggan, dan produk.
 
-Project ini dikembangkan bertahap agar setiap perubahan mudah ditinjau dan diuji.
-Panduan deployment production tersedia di
+> Jangan menjalankan `database/seed.sql` pada production karena berisi akun dan
+> password demo.
+
+### 3. Jalankan Backend
+
+```powershell
+cd backend
+npm install
+Copy-Item .env.example .env
+npm run dev
+```
+
+Sesuaikan koneksi MySQL, JWT secret, dan Redis pada `backend/.env`. Backend
+berjalan pada:
+
+```text
+http://localhost:5000
+```
+
+Health check:
+
+```text
+GET http://localhost:5000/api/health
+GET http://localhost:5000/api/health/ready
+```
+
+### 4. Jalankan Frontend
+
+Buka terminal baru:
+
+```powershell
+cd frontend
+npm install
+Copy-Item .env.example .env
+npm run dev
+```
+
+Frontend berjalan pada `http://localhost:5173`.
+
+## Akun Demo
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | `admin@kasirku.test` | `Admin12345` |
+| Kasir | `kasir@kasirku.test` | `Admin12345` |
+| Owner | `owner@kasirku.test` | `Admin12345` |
+
+Akun tersebut hanya untuk lingkungan lokal dan demonstrasi.
+
+## Environment Variables
+
+Contoh lengkap tersedia pada:
+
+- [`backend/.env.example`](backend/.env.example)
+- [`frontend/.env.example`](frontend/.env.example)
+
+Variable backend utama:
+
+| Variable | Fungsi |
+|---|---|
+| `PORT` | Port HTTP backend |
+| `FRONTEND_URL` | Origin frontend yang diizinkan oleh CORS |
+| `DB_*` | Konfigurasi koneksi MySQL |
+| `JWT_SECRET` | Secret penandatanganan JWT |
+| `JWT_EXPIRES_IN` | Masa berlaku token |
+| `REDIS_URL` | Connection string Redis |
+| `REDIS_TTL_SECONDS` | TTL default cache |
+
+Variable frontend:
+
+| Variable | Fungsi |
+|---|---|
+| `VITE_API_URL` | Base URL REST API |
+
+Jangan menyimpan file `.env`, password, token, sertifikat, atau connection
+string ke repository.
+
+## REST API
+
+API menggunakan prefix `/api` dan menyediakan 30 endpoint untuk:
+
+- Health dan readiness
+- Authentication
+- Dashboard
+- Kategori
+- Supplier
+- Produk
+- Pelanggan
+- Transaksi penjualan
+
+Dokumentasi endpoint dan matriks role tersedia di
+[`docs/api-design.md`](docs/api-design.md).
+
+## Pengujian
+
+### Backend
+
+```bash
+cd backend
+npm test
+```
+
+Test suite mencakup health check, authentication, authorization, CRUD data
+utama, transaksi, dan cache.
+
+### Frontend
+
+```bash
+cd frontend
+npm run lint
+npm run build
+```
+
+## Keamanan dan Konsistensi Data
+
+- Password disimpan menggunakan bcrypt.
+- Endpoint protected menggunakan JWT.
+- Otorisasi diverifikasi pada backend.
+- Helmet, CORS allowlist, dan rate limiting diterapkan.
+- Query database menggunakan parameter placeholder.
+- Transaksi penjualan menggunakan MySQL transaction dan row locking.
+- Koneksi MySQL production mendukung TLS.
+- Environment production divalidasi sebelum server berjalan.
+
+## Deployment
+
+Frontend, backend, MySQL, dan Redis dapat dipasang sebagai layanan terpisah.
+Konfigurasi production, pembuatan akun admin, TLS database, SPA fallback, dan
+langkah verifikasi tersedia di
 [`docs/deployment.md`](docs/deployment.md).
+
+## Dokumentasi
+
+- [Kebutuhan Sistem](docs/requirements.md)
+- [Desain Database](docs/database-design.md)
+- [Desain REST API](docs/api-design.md)
+- [Panduan Deployment](docs/deployment.md)
