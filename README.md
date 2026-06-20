@@ -272,8 +272,14 @@ npm run build
 
 ## Deployment
 
-Frontend, backend, MySQL, dan Redis dapat dipasang sebagai layanan terpisah.
-Konfigurasi production, pembuatan akun admin, TLS database, SPA fallback, dan
+Deployment production menggunakan:
+
+- Vercel untuk frontend
+- Render untuk backend
+- Aiven untuk MySQL
+- Redis Cloud untuk cache
+
+Konfigurasi provider, environment variable, TLS database, SPA rewrite, dan
 langkah verifikasi tersedia di
 [`docs/deployment.md`](docs/deployment.md).
 
