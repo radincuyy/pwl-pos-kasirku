@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
+import { MobileSaleCart } from "@/components/organisms/sales/MobileSaleCart"
 import { ProductCatalog } from "@/components/organisms/sales/ProductCatalog"
 import {
   SaleCart,
   type PaymentMethod,
+  type SaleCartProps,
 } from "@/components/organisms/sales/SaleCart"
 import { SaleReceiptDialog } from "@/components/organisms/sales/SaleReceiptDialog"
 import { SalesWorkspaceTemplate } from "@/components/templates/SalesWorkspaceTemplate"
@@ -43,6 +45,7 @@ export default function NewSalePage() {
   } = useAppSelector((state) => state.sales)
   const [search, setSearch] = useState("")
   const [validationError, setValidationError] = useState<string | null>(null)
+  const [mobileCartOpen, setMobileCartOpen] = useState(false)
 
   useEffect(() => {
     dispatch(fetchProducts())
@@ -66,6 +69,11 @@ export default function NewSalePage() {
       Object.fromEntries(
         cart.map((item) => [item.product.id, item.quantity])
       ) as Record<number, number>,
+    [cart]
+  )
+
+  const cartItemCount = useMemo(
+    () => cart.reduce((itemCount, item) => itemCount + item.quantity, 0),
     [cart]
   )
 
@@ -105,6 +113,7 @@ export default function NewSalePage() {
         })
       ).unwrap()
       await dispatch(fetchProducts()).unwrap()
+      setMobileCartOpen(false)
     } catch {
       return
     }
@@ -123,6 +132,30 @@ export default function NewSalePage() {
       dispatch(clearCurrentSale())
     }
   }
+
+  const saleCartProps = {
+    cart,
+    customers,
+    selectedCustomerId,
+    paymentMethod,
+    paidAmount,
+    totalAmount,
+    changeAmount,
+    loading,
+    error: validationError ?? error,
+    onCheckout: handleCheckout,
+    onClearCart: () => dispatch(clearCart()),
+    onCustomerChange: (customerId) =>
+      dispatch(setCartCustomerId(customerId)),
+    onPaidAmountChange: (amount) => {
+      setValidationError(null)
+      dispatch(setCartPaidAmount(amount))
+    },
+    onPaymentMethodChange: handlePaymentMethodChange,
+    onRemoveItem: (productId) => dispatch(removeFromCart(productId)),
+    onUpdateQuantity: (productId, quantity) =>
+      dispatch(updateCartQuantity({ productId, quantity })),
+  } satisfies Omit<SaleCartProps, "displayMode">
 
   return (
     <div className="flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">
@@ -154,31 +187,17 @@ export default function NewSalePage() {
           />
         }
         checkout={
-          <SaleCart
-            cart={cart}
-            customers={customers}
-            selectedCustomerId={selectedCustomerId}
-            paymentMethod={paymentMethod}
-            paidAmount={paidAmount}
+          <SaleCart {...saleCartProps} displayMode="panel" />
+        }
+        mobileCheckout={
+          <MobileSaleCart
+            open={mobileCartOpen}
+            itemCount={cartItemCount}
             totalAmount={totalAmount}
-            changeAmount={changeAmount}
-            loading={loading}
-            error={validationError ?? error}
-            onCheckout={handleCheckout}
-            onClearCart={() => dispatch(clearCart())}
-            onCustomerChange={(customerId) =>
-              dispatch(setCartCustomerId(customerId))
-            }
-            onPaidAmountChange={(amount) => {
-              setValidationError(null)
-              dispatch(setCartPaidAmount(amount))
-            }}
-            onPaymentMethodChange={handlePaymentMethodChange}
-            onRemoveItem={(productId) => dispatch(removeFromCart(productId))}
-            onUpdateQuantity={(productId, quantity) =>
-              dispatch(updateCartQuantity({ productId, quantity }))
-            }
-          />
+            onOpenChange={setMobileCartOpen}
+          >
+            <SaleCart {...saleCartProps} displayMode="sheet" />
+          </MobileSaleCart>
         }
       />
 
