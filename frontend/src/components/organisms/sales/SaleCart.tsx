@@ -28,6 +28,7 @@ import {
 } from "@/components/atoms/ui/select"
 import { Separator } from "@/components/atoms/ui/separator"
 import { formatCurrency } from "@/lib/format"
+import { cn } from "@/lib/utils"
 
 export type PaymentMethod = "cash" | "transfer" | "qris" | "debit"
 
@@ -36,7 +37,7 @@ export type SaleCartItem = {
   quantity: number
 }
 
-type SaleCartProps = {
+export type SaleCartProps = {
   cart: SaleCartItem[]
   customers: Customer[]
   selectedCustomerId: number | null
@@ -46,6 +47,7 @@ type SaleCartProps = {
   changeAmount: number
   loading: boolean
   error: string | null
+  displayMode: "panel" | "sheet"
   onCheckout: () => void
   onClearCart: () => void
   onCustomerChange: (customerId: number | null) => void
@@ -65,6 +67,7 @@ export function SaleCart({
   changeAmount,
   loading,
   error,
+  displayMode,
   onCheckout,
   onClearCart,
   onCustomerChange,
@@ -77,8 +80,16 @@ export function SaleCart({
     cart.length > 0 && paidAmount >= totalAmount && !loading
 
   return (
-    <Card className="max-h-[calc(100svh-7rem)]">
-      <CardHeader className="border-b">
+    <Card
+      className={cn(
+        displayMode === "panel" && "max-h-[calc(100svh-7rem)]",
+        displayMode === "sheet" &&
+          "h-auto min-h-full max-h-none overflow-visible rounded-none ring-0"
+      )}
+    >
+      <CardHeader
+        className={cn("border-b", displayMode === "sheet" && "pr-14")}
+      >
         <div>
           <CardTitle>Keranjang</CardTitle>
           <CardDescription>{cart.length} jenis produk dipilih</CardDescription>
@@ -158,7 +169,13 @@ export function SaleCart({
         )}
       </CardContent>
 
-      <CardFooter className="block space-y-4">
+      <CardFooter
+        className={cn(
+          "block space-y-4",
+          displayMode === "sheet" &&
+            "pb-[calc(1rem+env(safe-area-inset-bottom))]"
+        )}
+      >
         <div className="grid gap-2">
           <Label>Pelanggan (opsional)</Label>
           <Select
@@ -211,11 +228,14 @@ export function SaleCart({
             </Select>
           </div>
           <div className="grid min-w-0 gap-2">
-            <Label htmlFor="paid-amount" className="min-h-5">
+            <Label
+              htmlFor={`paid-amount-${displayMode}`}
+              className="min-h-5"
+            >
               Nominal bayar
             </Label>
             <Input
-              id="paid-amount"
+              id={`paid-amount-${displayMode}`}
               type="number"
               min="0"
               value={paidAmount || ""}

@@ -22,14 +22,18 @@ export function ProductThumbnail({
       className={cn(
         "flex shrink-0 items-center justify-center overflow-hidden bg-muted text-muted-foreground",
         size === "small" && "size-10 rounded-md border",
-        size === "catalog" && "aspect-[4/3] w-full"
+        size === "catalog" && "aspect-[4/3] w-full",
+        size === "catalog" && showImage && "bg-white"
       )}
     >
       {showImage ? (
         <img
           src={src ?? undefined}
           alt={alt}
-          className="size-full object-cover"
+          className={cn(
+            "size-full",
+            size === "small" ? "object-cover" : "object-contain"
+          )}
           loading="lazy"
           onError={() => setFailedSource(src)}
         />
